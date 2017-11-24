@@ -13,7 +13,7 @@ private:
 	CPlateau plateau; 
 
 public:
-	CCellule(int positionX, int positionY);
+	CCellule(int lig, int col, CPlateau p);
 	~CCellule();
 	void modifmurhaut();
 	void modifmurbas();

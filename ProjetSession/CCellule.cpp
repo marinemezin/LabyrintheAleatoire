@@ -1,13 +1,14 @@
 #include "CCellule.h"
 
-CCellule::CCellule(int lig, int col){
+CCellule::CCellule(int lig, int col, CPlateau p){
 	visite = false;
-	int ligne = lig;
-	int colonne = col;
-	bool murhaut = true;
-	bool murbas = true;
-	bool murdroit = true;
-	bool murgauche = true;
+	ligne = lig;
+	colonne = col;
+	murhaut = true;
+	murbas = true;
+	murdroit = true;
+	murgauche = true;
+	plateau = p;
 }
 
 CCellule::~CCellule(){
@@ -17,13 +18,14 @@ CCellule::~CCellule(){
 
 void CCellule::modifmurhaut() {
 	murhaut = false;
+
 }
 void CCellule::modifmurbas() {
 
 }
-void modifmurdroit() {
+void CCellule::modifmurdroit() {
 
 }
-void modifmurgauche() {
+void CCellule::modifmurgauche() {
 
 }
