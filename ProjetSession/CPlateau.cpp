@@ -13,7 +13,9 @@ CPlateau::CPlateau() {
 	ligactuelle = ligdep;
 	colactuelle = coldep;
 	visites[150][2];
-	for (int i = 0; i < LIGNE*COLONNE; i++) {
+	visites[0][0] = ligdep;
+	visites[0][1] = coldep;
+	for (int i = 1; i < LIGNE*COLONNE; i++) {
 		visites[i][0] = 0;
 		visites[i][1] = 0;
 	}

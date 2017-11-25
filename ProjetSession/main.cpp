@@ -18,3 +18,5 @@ Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellul
 Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
 L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
 */
+
+/*il n'est pas géré si on essaie de supprimer un mur qui n'est pas dans le tableau*/
