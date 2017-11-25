@@ -10,14 +10,18 @@ private:
 	bool murbas;
 	bool murdroit;
 	bool murgauche;
-	CPlateau plateau; 
+	CPlateau *plateau; 
 
 public:
-	CCellule(int lig, int col, CPlateau p);
+	CCellule(int lig, int col, CPlateau *p);
 	~CCellule();
 	void modifmurhaut();
 	void modifmurbas();
 	void modifmurdroit();
 	void modifmurgauche();
+	void suppmurhaut();
+	void suppmurbas();
+	void suppmurdroit();
+	void suppmurgauche();
 
 };
