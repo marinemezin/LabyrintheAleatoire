@@ -17,7 +17,6 @@ int locX = 1;
 int locY = 1;
 
 void printGrid(char grid[SIZEY][SIZEX]) {
-	system("clear");
 	for (int i = 0; i < SIZEY; i++) {
 		for (int j = 0; j < SIZEX; j++) {
 			cout << grid[i][j];
@@ -88,7 +87,7 @@ int main()
 				grid[i][j] = '#';
 			}
 		}
-
+		//printGrid(grid);
 		//init rand
 		srand(time(0));
 
@@ -98,7 +97,7 @@ int main()
 
 		nGood = 0;
 		int direction = 0;
-
+		system("PAUSE");
 		do {
 			//find n good moves
 			for (int i = 0; i < 4; i++) {
@@ -150,6 +149,8 @@ int main()
 		} while (!xValues.empty());
 
 		//final maze output
+		system("PAUSE");
 		printGrid(grid);
+		system("PAUSE");
 		return 0;	
 }
