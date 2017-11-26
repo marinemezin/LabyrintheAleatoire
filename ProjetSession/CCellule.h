@@ -1,5 +1,7 @@
-#include "CPlateau.h"
 #pragma once
+
+class CPlateau;
+
 class CCellule
 {
 private:
@@ -23,5 +25,9 @@ public:
 	void suppmurbas();
 	void suppmurdroit();
 	void suppmurgauche();
-
+	void afficheCellule();
+	bool getMurHaut();
+	bool getMurBas();
+	bool getMurDroit();
+	bool getMurGauche();
 };

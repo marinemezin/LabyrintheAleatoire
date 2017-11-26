@@ -1,10 +1,14 @@
 #include<iostream>
+#include "CPlateau.h"
 using namespace std;
 
 
 int main()
 {
-		return 0;	
+	CPlateau* monPlateau = new CPlateau();
+	monPlateau->afficheplateau();
+	system("PAUSE");
+	return 0;	
 }
 
 

@@ -1,4 +1,5 @@
 #include "CCellule.h"
+#include "CPlateau.h"
 
 CCellule::CCellule(int lig, int col, CPlateau *p){
 	visite = false;
@@ -50,4 +51,27 @@ void CCellule::suppmurdroit() {
 
 void CCellule::suppmurgauche() {
 	murgauche = false;
+}
+
+void CCellule::afficheCellule() {
+}
+
+bool CCellule::getMurHaut()
+{
+	return murhaut;
+}
+
+bool CCellule::getMurBas()
+{
+	return murbas;
+}
+
+bool CCellule::getMurDroit()
+{
+	return murdroit;
+}
+
+bool CCellule::getMurGauche()
+{
+	return murgauche;
 }
