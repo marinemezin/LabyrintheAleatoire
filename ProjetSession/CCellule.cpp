@@ -1,97 +1,47 @@
 #include "CCellule.h"
 #include "CPlateau.h"
 
-CCellule::CCellule(int lig, int col, CPlateau *p){
+CCellule::CCellule(int lig, int col){
 	visite = false;
 	ligne = lig;
 	colonne = col;
-	murhaut = true;
-	murbas = true;
-	murdroit = true;
-	murgauche = true;
-	plateau = p;
+	murHaut = true;
+	murBas = true;
+	murDroit = true;
+	murGauche = true;
 }
 
 CCellule::~CCellule(){
-
 }
 
-
-void CCellule::modifmurhaut() {
-	murhaut = false;
-	plateau->detruiremurbas(ligne + 1, colonne);
+bool CCellule::GetMurHaut() {
+	return murHaut;
 }
 
-void CCellule::modifmurbas() {
-	murbas = false;
-	plateau->detruiremurhaut(ligne - 1, colonne);
+bool CCellule::GetMurBas() {
+	return murBas;
 }
 
-void CCellule::modifmurdroit() {
-	murdroit = false;
-	plateau->detruiremurgauche(ligne, colonne + 1);
+bool CCellule::GetMurDroit() {
+	return murDroit;
 }
 
-void CCellule::modifmurgauche() {
-	murgauche = false;
-	plateau->detruiremurdroit(ligne, colonne - 1);
+bool CCellule::GetMurGauche() {
+	return murGauche;
 }
 
-void CCellule::suppmurhaut() {
-	murhaut = false;
+void CCellule::SetMurDroit(bool valeur) {
+	murDroit = valeur;
 }
 
-void CCellule::suppmurbas() {
-	murbas = false;
+void CCellule::SetMurGauche(bool valeur) {
+	murGauche = valeur;
 }
 
-void CCellule::suppmurdroit() {
-	murdroit = false;
+void CCellule::SetMurHaut(bool valeur) {
+	murHaut = valeur;
 }
 
-void CCellule::suppmurgauche() {
-	murgauche = false;
-}
-
-void CCellule::afficheCellule() {
-}
-
-bool CCellule::getMurHaut()
-{
-	return murhaut;
-}
-
-bool CCellule::getMurBas()
-{
-	return murbas;
-}
-
-bool CCellule::getMurDroit()
-{
-	return murdroit;
-}
-
-bool CCellule::getMurGauche()
-{
-	return murgauche;
-}
-
-void CCellule::setMurDroit(bool valeur)
-{
-	murdroit = valeur;
-}
-
-void CCellule::setMurGauche(bool valeur)
-{
-	murgauche = valeur;
-}
-
-void CCellule::setMurHaut(bool valeur)
-{
-	murhaut = valeur;
-}
-
-void CCellule::setMurBas(bool valeur)
-{
-	murbas = valeur;
+void CCellule::SetMurBas(bool valeur) {
+	murBas = valeur;
 }

@@ -1,37 +1,25 @@
 #pragma once
 
-class CPlateau;
-
 class CCellule
 {
 private:
 	bool visite;
 	int ligne;
 	int colonne;
-	bool murhaut;
-	bool murbas;
-	bool murdroit;
-	bool murgauche;
-	CPlateau *plateau; 
+	bool murHaut;
+	bool murBas;
+	bool murDroit;
+	bool murGauche;
 
 public:
-	CCellule(int lig, int col, CPlateau *p);
+	CCellule(int lig, int col);
 	~CCellule();
-	void modifmurhaut();
-	void modifmurbas();
-	void modifmurdroit();
-	void modifmurgauche();
-	void suppmurhaut();
-	void suppmurbas();
-	void suppmurdroit();
-	void suppmurgauche();
-	void afficheCellule();
-	bool getMurHaut();
-	bool getMurBas();
-	bool getMurDroit();
-	bool getMurGauche();
-	void setMurDroit(bool valeur);
-	void setMurGauche(bool valeur);
-	void setMurHaut(bool valeur);
-	void setMurBas(bool valeur);
+	bool GetMurHaut();
+	bool GetMurBas();
+	bool GetMurDroit();
+	bool GetMurGauche();
+	void SetMurDroit(bool valeur);
+	void SetMurGauche(bool valeur);
+	void SetMurHaut(bool valeur);
+	void SetMurBas(bool valeur);
 };

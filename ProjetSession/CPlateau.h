@@ -3,30 +3,31 @@
 #include "CCellule.h"
 
 static const int LIGNE = 8;
-static const int COLONNE = 25;
+static const int COLONNE = 15;
 
 
 class CPlateau
 {
 private : 
 	CCellule* plateau[LIGNE][COLONNE];
-	int ligdep;
-	int coldep;
-	int ligarr;
-	int colarr;
-	int ligactuelle;
-	int colactuelle; 
+	int ligDep;
+	int colDep;
+	int ligArr;
+	int colArr;
+	int ligActuelle;
+	int colActuelle; 
 	int visites[LIGNE*COLONNE][2];
-	int nbvisites;
+	int nbVisites;
 
-	void initialisationDepArr();
+	void InitialisationDepArr();
 
 public : 
 	CPlateau();
 	~CPlateau();
-	void detruiremurbas(int ligne, int colonne);
-	void detruiremurhaut(int ligne, int colonne);
-	void detruiremurdroit(int ligne, int colonne);
-	void detruiremurgauche(int ligne, int colonne);
-	void afficheplateau();
+	void DetruireMurBas(int ligne, int colonne);
+	void DetruireMurHaut(int ligne, int colonne);
+	void DetruireMurDroit(int ligne, int colonne);
+	void DetruireMurGauche(int ligne, int colonne);
+	void AffichePlateau();
+	void AfficheElse(int i, int j);
 };

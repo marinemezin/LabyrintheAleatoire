@@ -6,9 +6,9 @@ using namespace std;
 int main()
 {
 	CPlateau* monPlateau = new CPlateau();
-	monPlateau->afficheplateau();
+	monPlateau->AffichePlateau();
 	system("PAUSE");
-	return 0;	
+	return 0;
 }
 
 

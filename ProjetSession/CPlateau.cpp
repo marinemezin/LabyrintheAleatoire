@@ -6,29 +6,39 @@ using namespace std;
 CPlateau::CPlateau() {
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
-			//plateau[i][j] = &CCellule(i, j, this);
-			plateau[i][j] = new CCellule(i, j, this);
+			plateau[i][j] = new CCellule(i, j);
 		}
 	}
-	ligdep = LIGNE/2 -LIGNE%2; //a modif pour que ça soit random entre 0 et LIGNE non inclu
-	coldep = 0;
-	ligarr = ligdep; //a modif pour que ça soit random entre 0 et LIGNE non inclu
-	colarr = COLONNE - 1;
-	ligactuelle = ligdep;
-	colactuelle = coldep;
+	ligDep = LIGNE/2 -LIGNE%2; //a modif pour que ça soit random entre 0 et LIGNE non inclu
+	colDep = 0;
+	ligArr = ligDep; //a modif pour que ça soit random entre 0 et LIGNE non inclu
+	colArr = COLONNE - 1;
+	ligActuelle = ligDep;
+	colActuelle = colDep;
 
 	//Quesako ?
 	visites[LIGNE*COLONNE][2];
-	visites[0][0] = ligdep;
-	visites[0][1] = coldep;
+	visites[0][0] = ligDep;
+	visites[0][1] = colDep;
 	for (int i = 1; i < LIGNE*COLONNE; i++) {
 		visites[i][0] = 0;
 		visites[i][1] = 0;
 	}
+	nbVisites = 1;
+	//Fin du quesako
 
-	nbvisites = 1;
+	InitialisationDepArr();
 
-	initialisationDepArr();
+	//Test
+	/**DetruireMurGauche(ligDep, colDep);
+	DetruireMurBas(ligDep, colDep + 1);
+	DetruireMurGauche(ligDep + 1, colDep + 1);
+	DetruireMurGauche(ligDep + 1, colDep + 2);
+	DetruireMurGauche(ligDep + 1, colDep + 3);
+	DetruireMurHaut(ligDep + 1, colDep + 4);
+	DetruireMurHaut(ligDep, colDep + 4);
+	DetruireMurDroit(ligDep - 1, colDep + 4);
+	DetruireMurDroit(ligDep - 1, colDep + 3);/**/
 }
 
 
@@ -40,59 +50,74 @@ CPlateau::~CPlateau() {
 	}
 }
 
-void CPlateau::detruiremurbas(int ligne, int colonne) {
-	plateau[ligne][colonne]->suppmurbas();
+void CPlateau::DetruireMurBas(int ligne, int colonne) {
+	plateau[ligne][colonne]->SetMurBas(false);
+	if (ligne + 1 < LIGNE) { 
+		plateau[ligne + 1][colonne]->SetMurHaut(false);
+	}
 }
 
-void CPlateau::detruiremurhaut(int ligne, int colonne) {
-	plateau[ligne][colonne]->suppmurhaut();
+void CPlateau::DetruireMurHaut(int ligne, int colonne) {
+	plateau[ligne][colonne]->SetMurHaut(false);
+	if (ligne - 1 >= 0) {
+		plateau[ligne - 1][colonne]->SetMurBas(false);
+	}
 }
 
-void CPlateau::detruiremurdroit(int ligne, int colonne) {
-	plateau[ligne][colonne]->suppmurdroit();
+void CPlateau::DetruireMurDroit(int ligne, int colonne) {
+	plateau[ligne][colonne]->SetMurDroit(false);
+	if (colonne - 1 >= 0) {
+		plateau[ligne][colonne - 1]->SetMurGauche(false);
+	}
 }
 
-void CPlateau::detruiremurgauche(int ligne, int colonne) {
-	plateau[ligne][colonne]->suppmurgauche();
+void CPlateau::DetruireMurGauche(int ligne, int colonne) {
+	plateau[ligne][colonne]->SetMurGauche(false);
+	if (colonne + 1 < COLONNE) {
+		plateau[ligne][colonne + 1]->SetMurDroit(false);
+	}
 }
 
-void CPlateau::afficheplateau() {
+void CPlateau::AffichePlateau() {
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du haut
-			if (plateau[i][j]->getMurHaut()) { cout << "***"; }
-			else { 
-				if (plateau[i][j]->getMurDroit()) { cout << "* "; }
-				else { cout << "  "; }
-				if (plateau[i][j]->getMurGauche()) { cout << "*"; }
-				else { cout << " "; }
-			}
+			if (plateau[i][j]->GetMurHaut()) { cout << "* * * "; }
+			else { AfficheElse(i, j); }
 		}
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
 			//Mur droit et case centre (correspond à l'espace)
-			if (plateau[i][j]->getMurDroit()) { cout << "* "; }
-			else { cout << "  "; }
+			if (plateau[i][j]->GetMurDroit()) { cout << "*   "; }
+			else { cout << "    "; }
 			//Mur gauche
-			if (plateau[i][j]->getMurGauche()) { cout << "*"; }
-			else { cout << " "; }
+			if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
+			else { cout << "  "; }
 		}
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du bas
-			if (plateau[i][j]->getMurBas()) { cout << "***"; }
-			else {
-				if (plateau[i][j]->getMurDroit()) { cout << "* "; }
-				else { cout << "  "; }
-				if (plateau[i][j]->getMurGauche()) { cout << "*"; }
-				else { cout << " "; }
-			}
+			if (plateau[i][j]->GetMurBas()) { cout << "* * * "; }
+			else { AfficheElse(i, j); }
 		}
 		cout << endl;
 	}
 }
 
-void CPlateau::initialisationDepArr() {
-	plateau[ligdep][coldep]->setMurDroit(false);
-	plateau[ligarr][colarr]->setMurGauche(false);
+void CPlateau::AfficheElse(int i, int j) {
+	if (plateau[i][j]->GetMurDroit()) { cout << "*   "; }
+	else if ((!plateau[i][j]->GetMurDroit()) && (plateau[i + 1][j]->GetMurDroit())) {
+		cout << "*   ";
+	}
+	else { cout << "    "; }
+	if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
+	else if ((!plateau[i][j]->GetMurGauche()) && (plateau[i + 1][j]->GetMurGauche())) {
+		cout << "* ";
+	}
+	else { cout << "  "; }
+}
+
+void CPlateau::InitialisationDepArr() {
+	plateau[ligDep][colDep]->SetMurDroit(false);
+	plateau[ligArr][colArr]->SetMurGauche(false);
 }
