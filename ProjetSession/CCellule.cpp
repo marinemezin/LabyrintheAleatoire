@@ -1,5 +1,4 @@
 #include "CCellule.h"
-#include "CPlateau.h"
 
 CCellule::CCellule(int lig, int col){
 	visite = false;
