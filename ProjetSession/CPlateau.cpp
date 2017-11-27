@@ -1,9 +1,17 @@
 #include "CPlateau.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
+static int fistInit = 0;
+
 CPlateau::CPlateau() {
+	if(firstInit == 0) { 
+		firstInit = 1;
+		srand(NULL);
+	}
+
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			plateau[i][j] = new CCellule(i, j);
@@ -16,7 +24,7 @@ CPlateau::CPlateau() {
 	ligActuelle = ligDep;
 	colActuelle = colDep;
 
-	//Quesako ?
+	//Liste ordonnée des cases visitées
 	visites[LIGNE*COLONNE][2];
 	visites[0][0] = ligDep;
 	visites[0][1] = colDep;
@@ -24,11 +32,12 @@ CPlateau::CPlateau() {
 		visites[i][0] = 0;
 		visites[i][1] = 0;
 	}
+
+	//?? why ? ne faut-il pas modifier la valeur de la première case dans ce cas et mettre une valeur dans le tableau ?
 	nbVisites = 1;
-	//Fin du quesako
 
 	InitialisationDepArr();
-
+	GenerateRandomLaby();
 	//Test
 	/**DetruireMurGauche(ligDep, colDep);
 	DetruireMurBas(ligDep, colDep + 1);
@@ -50,31 +59,71 @@ CPlateau::~CPlateau() {
 	}
 }
 
-void CPlateau::DetruireMurBas(int ligne, int colonne) {
-	plateau[ligne][colonne]->SetMurBas(false);
-	if (ligne + 1 < LIGNE) { 
-		plateau[ligne + 1][colonne]->SetMurHaut(false);
+bool CPlateau::DetruireMurBas(int ligne, int colonne) {
+	try {
+		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+			throw "ERROR : index outside of the range";
+		}
+		plateau[ligne][colonne]->SetMurBas(false);
+		if (ligne + 1 < LIGNE) {
+			plateau[ligne + 1][colonne]->SetMurHaut(false);
+		}
+		return true;
+	}
+	catch (string const& error) {
+		cerr << error << endl;
+		return false;
 	}
 }
 
-void CPlateau::DetruireMurHaut(int ligne, int colonne) {
-	plateau[ligne][colonne]->SetMurHaut(false);
-	if (ligne - 1 >= 0) {
-		plateau[ligne - 1][colonne]->SetMurBas(false);
+bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
+	try {
+		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+			throw "ERROR : index outside of the range";
+		}
+		plateau[ligne][colonne]->SetMurHaut(false);
+		if (ligne - 1 >= 0) {
+			plateau[ligne - 1][colonne]->SetMurBas(false);
+		}
+		return true;
+	}
+	catch (string const& error) {
+		cerr << error << endl;
+		return false;
 	}
 }
 
-void CPlateau::DetruireMurDroit(int ligne, int colonne) {
-	plateau[ligne][colonne]->SetMurDroit(false);
-	if (colonne - 1 >= 0) {
-		plateau[ligne][colonne - 1]->SetMurGauche(false);
+bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
+	try {
+		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+			throw "ERROR : index outside of the range";
+		}
+		plateau[ligne][colonne]->SetMurDroit(false);
+		if (colonne - 1 >= 0) {
+			plateau[ligne][colonne - 1]->SetMurGauche(false);
+		}
+		return true;
+	}
+	catch (string const& error) {
+		cerr << error << endl;
+		return false;
 	}
 }
 
-void CPlateau::DetruireMurGauche(int ligne, int colonne) {
-	plateau[ligne][colonne]->SetMurGauche(false);
-	if (colonne + 1 < COLONNE) {
-		plateau[ligne][colonne + 1]->SetMurDroit(false);
+bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
+	try {
+		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+			throw "ERROR : index outside of the range";
+		}
+		plateau[ligne][colonne]->SetMurGauche(false);
+		if (colonne + 1 < COLONNE) {
+			plateau[ligne][colonne + 1]->SetMurDroit(false);
+		}
+		return true;
+	}
+	catch (string const& error) {
+		cerr << error << endl;
+		return false;
 	}
 }
 
@@ -120,4 +169,56 @@ void CPlateau::AfficheElse(int i, int j) {
 void CPlateau::InitialisationDepArr() {
 	plateau[ligDep][colDep]->SetMurDroit(false);
 	plateau[ligArr][colArr]->SetMurGauche(false);
+}
+
+void CPlateau::GenerateRandomLaby() {
+	/* Choisissez un point de départ dans le champ.
+	 * Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
+	 * Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
+	 * L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
+	 */
+	
+	//Point de départ
+	CCellule* celluleActuelle = plateau[ligActuelle][colActuelle];
+
+	//Choix du mur
+	int choixMur = rand() % 4; //entre 0 et 3
+	//0 Mur Haut
+	//1 Mur Gauche
+	//2 Mur Bas
+	//3 Mur Droit
+	switch (choixMur)
+	{
+	case 0:
+		if (/*celluleAdjacente pas visitee*/true) {
+			celluleActuelle->SetMurHaut(false);
+			ligActuelle -= 1;
+			celluleActuelle = plateau[ligActuelle][colActuelle];
+		}
+		break;
+	case 1:
+		if (/*celluleAdjacente pas visitee*/true) {
+			celluleActuelle->SetMurGauche(false);
+			colActuelle += 1;
+			celluleActuelle = plateau[ligActuelle][colActuelle];
+		}
+		break;
+	case 2:
+		if (/*celluleAdjacente pas visitee*/true) {
+			celluleActuelle->SetMurBas(false);
+			ligActuelle += 1;
+			celluleActuelle = plateau[ligActuelle][colActuelle];
+		}
+		break;
+	case 3:
+		if (/*celluleAdjacente pas visitee*/true) {
+			celluleActuelle->SetMurDroit(false);
+			colActuelle -= 1;
+			celluleActuelle = plateau[ligActuelle][colActuelle];
+		}
+		break;
+	default:
+		break;
+	}
+
 }

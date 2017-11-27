@@ -5,7 +5,6 @@
 static const int LIGNE = 8;
 static const int COLONNE = 15;
 
-
 class CPlateau
 {
 private : 
@@ -20,14 +19,17 @@ private :
 	int nbVisites;
 
 	void InitialisationDepArr();
+	void GenerateRandomLaby();
+
+	static int firstInit;
 
 public : 
 	CPlateau();
 	~CPlateau();
-	void DetruireMurBas(int ligne, int colonne);
-	void DetruireMurHaut(int ligne, int colonne);
-	void DetruireMurDroit(int ligne, int colonne);
-	void DetruireMurGauche(int ligne, int colonne);
+	bool DetruireMurBas(int ligne, int colonne);
+	bool DetruireMurHaut(int ligne, int colonne);
+	bool DetruireMurDroit(int ligne, int colonne);
+	bool DetruireMurGauche(int ligne, int colonne);
 	void AffichePlateau();
 	void AfficheElse(int i, int j);
 };
