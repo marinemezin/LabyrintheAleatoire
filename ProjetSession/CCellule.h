@@ -18,6 +18,8 @@ public:
 	bool GetMurBas();
 	bool GetMurDroit();
 	bool GetMurGauche();
+	bool GetVisite();
+	void SetVisite(bool valeur);
 	void SetMurDroit(bool valeur);
 	void SetMurGauche(bool valeur);
 	void SetMurHaut(bool valeur);

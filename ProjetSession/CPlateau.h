@@ -20,6 +20,7 @@ private :
 
 	void InitialisationDepArr();
 	void GenerateRandomLaby();
+	bool IsVisited(int ligNew, int colNew);
 
 	static int firstInit;
 

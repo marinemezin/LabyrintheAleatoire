@@ -29,6 +29,16 @@ bool CCellule::GetMurGauche() {
 	return murGauche;
 }
 
+bool CCellule::GetVisite()
+{
+	return visite;
+}
+
+void CCellule::SetVisite(bool valeur)
+{
+	visite = valeur;
+}
+
 void CCellule::SetMurDroit(bool valeur) {
 	murDroit = valeur;
 }

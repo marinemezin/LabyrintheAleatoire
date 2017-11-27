@@ -171,6 +171,10 @@ void CPlateau::InitialisationDepArr() {
 	plateau[ligArr][colArr]->SetMurGauche(false);
 }
 
+bool CPlateau::IsVisited(int ligNew, int colNew) {
+	return plateau[ligNew][colNew]->GetVisite();
+}
+
 void CPlateau::GenerateRandomLaby() {
 	/* Choisissez un point de départ dans le champ.
 	 * Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
@@ -181,44 +185,90 @@ void CPlateau::GenerateRandomLaby() {
 	//Point de départ
 	CCellule* celluleActuelle = plateau[ligActuelle][colActuelle];
 
+
+	//Commencer un while ici ? tant que on est pas revenu au point de départ
+
+
+
+
+	//Mettre un compteur pour compter si les 4 cases adjacentes a ma case actuelle sont déjà visitées
+	int javance; //si on réussi à avancer dans une cellule non visitée
+	int bloquee; //a incrementer si on rencontre une case adjacente déjà visitée
+	//Si bloquee = 4 on utilise le tableau pour retourner à la case d'avant (caseActuelle = cadeDavant)
+
+	//Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
+	int testHaut;
+	int testBas;
+	int testDroit;
+	int testGauche; //4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
+
+
+
+
 	//Choix du mur
 	int choixMur = rand() % 4; //entre 0 et 3
 	//0 Mur Haut
 	//1 Mur Gauche
 	//2 Mur Bas
 	//3 Mur Droit
+
+	//Faire une vérif préalable avant le switch
+	//Exemple si testBas = 1
+	//Cela veux dire que le bas a déjà été testé et c'est une case adjacente
+	//Donc on ne veux pas retirer le 2
+	//On refait un random sur choixMur jusqu'à ce qu'il soit différent de 2
+
 	switch (choixMur)
 	{
 	case 0:
-		if (/*celluleAdjacente pas visitee*/true) {
-			celluleActuelle->SetMurHaut(false);
-			ligActuelle -= 1;
-			celluleActuelle = plateau[ligActuelle][colActuelle];
+		if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { //si une case au dessus existe
+			if (!IsVisited(ligActuelle - 1, colActuelle)) { //si la case adjacente n'a pas été visitée
+				if (DetruireMurHaut(ligActuelle, colActuelle)) { //si le mur du haut a pu être détruit
+					ligActuelle -= 1; //on se déplace sur la case adjacente
+					celluleActuelle = plateau[ligActuelle][colActuelle];
+					//Ajouter la case dans les cases visitees : créer méthode pour
+				}
+			}
 		}
 		break;
 	case 1:
-		if (/*celluleAdjacente pas visitee*/true) {
-			celluleActuelle->SetMurGauche(false);
-			colActuelle += 1;
-			celluleActuelle = plateau[ligActuelle][colActuelle];
+		if ((colActuelle + 1 >= 0) && (colActuelle + 1 < COLONNE)) { //si une case à gauche existe
+			if (!IsVisited(ligActuelle, colActuelle + 1)) { //si la case adjacente n'a pas été visitée
+				if (DetruireMurGauche(ligActuelle, colActuelle)) { //si le mur de gauche a pu être détruit
+					colActuelle += 1;
+					celluleActuelle = plateau[ligActuelle][colActuelle];
+					//Ajouter la case dans les cases visitees : créer méthode pour
+				}
+			}
 		}
 		break;
 	case 2:
-		if (/*celluleAdjacente pas visitee*/true) {
-			celluleActuelle->SetMurBas(false);
-			ligActuelle += 1;
-			celluleActuelle = plateau[ligActuelle][colActuelle];
+		if ((ligActuelle + 1 >= 0) && (ligActuelle + 1 < LIGNE)) { //si une case en dessous existe
+			if (!IsVisited(ligActuelle + 1, colActuelle)) { //si la case adjacente n'a pas été visitée
+				if (DetruireMurBas(ligActuelle, colActuelle)) { //si le mur du bas a pu être détruit
+					ligActuelle += 1;
+					celluleActuelle = plateau[ligActuelle][colActuelle];
+					//Ajouter la case dans les cases visitees : créer méthode pour
+				}
+			}
 		}
 		break;
 	case 3:
-		if (/*celluleAdjacente pas visitee*/true) {
-			celluleActuelle->SetMurDroit(false);
-			colActuelle -= 1;
-			celluleActuelle = plateau[ligActuelle][colActuelle];
+		if ((colActuelle - 1 >= 0) && (colActuelle - 1 < COLONNE)) { //si une case à droite existe
+			if (!IsVisited(ligActuelle, colActuelle - 1)) { //si la case adjacente n'a pas été visitée
+				if (DetruireMurDroit(ligActuelle, colActuelle)) { //si le mur de droite a pu être détruit
+					colActuelle -= 1;
+					celluleActuelle = plateau[ligActuelle][colActuelle];
+					//Ajouter la case dans les cases visitees : créer méthode pour
+				}
+			}
 		}
 		break;
 	default:
 		break;
 	}
 
+
+	//En dehors du while
+	//Créer la sortie qui a pour colonne = COLONNE - 1; et ligne aléatoire entre 0 et LIGNE -1
 }
