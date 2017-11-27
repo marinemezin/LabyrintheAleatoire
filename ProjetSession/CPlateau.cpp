@@ -44,8 +44,9 @@ CPlateau::CPlateau() {
 	nbVisites = 1;
 
 	//GenerateRandomLaby();
+
 	//Test
-	/**/DetruireMurGauche(ligDep, colDep);
+	/**DetruireMurGauche(ligDep, colDep);
 	DetruireMurBas(ligDep, colDep + 1);
 	DetruireMurGauche(ligDep + 1, colDep + 1);
 	DetruireMurGauche(ligDep + 1, colDep + 2);
@@ -67,7 +68,7 @@ CPlateau::~CPlateau() {
 
 bool CPlateau::DetruireMurBas(int ligne, int colonne) {
 	try {
-		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
 		plateau[ligne][colonne]->SetMurBas(false);
@@ -76,15 +77,15 @@ bool CPlateau::DetruireMurBas(int ligne, int colonne) {
 		}
 		return true;
 	}
-	catch (string const& error) {
-		cerr << error << endl;
+	catch (char* const e) {
+		cerr << e << endl;
 		return false;
 	}
 }
 
 bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
 	try {
-		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
 		plateau[ligne][colonne]->SetMurHaut(false);
@@ -93,15 +94,15 @@ bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
 		}
 		return true;
 	}
-	catch (string const& error) {
-		cerr << error << endl;
+	catch (char* const e) {
+		cerr << e << endl;
 		return false;
 	}
 }
 
 bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
 	try {
-		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
 		plateau[ligne][colonne]->SetMurDroit(false);
@@ -110,15 +111,15 @@ bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
 		}
 		return true;
 	}
-	catch (string const& error) {
-		cerr << error << endl;
+	catch (char* const e) {
+		cerr << e << endl;
 		return false;
 	}
 }
 
 bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 	try {
-		if ((ligne >= 0) && (ligne < LIGNE) && (colonne >= 0) && (colonne < COLONNE)) {
+		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
 		plateau[ligne][colonne]->SetMurGauche(false);
@@ -127,8 +128,8 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 		}
 		return true;
 	}
-	catch (string const& error) {
-		cerr << error << endl;
+	catch (char* const e) {
+		cerr << e << endl;
 		return false;
 	}
 }
@@ -161,11 +162,17 @@ void CPlateau::AffichePlateau() {
 
 void CPlateau::AfficheElse(int i, int j) {
 	if (plateau[i][j]->GetMurDroit()) { cout << "*   "; }
+	else if ((!plateau[i][j]->GetMurDroit()) && (i + 1 >= LIGNE)) { //si je suis sur la dernière ligne
+		cout << "*   ";
+	}
 	else if ((!plateau[i][j]->GetMurDroit()) && (plateau[i + 1][j]->GetMurDroit())) {
 		cout << "*   ";
 	}
 	else { cout << "    "; }
 	if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
+	else if ((!plateau[i][j]->GetMurGauche()) && (i + 1 >= LIGNE)) {
+		cout << "* ";
+	}
 	else if ((!plateau[i][j]->GetMurGauche()) && (plateau[i + 1][j]->GetMurGauche())) {
 		cout << "* ";
 	}
@@ -176,7 +183,7 @@ bool CPlateau::IsVisited(int ligNew, int colNew) {
 	return plateau[ligNew][colNew]->GetVisite();
 }
 
-void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int& javance)
+void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int & javance)
 {
 	haut = 0;
 	bas = 0;
@@ -222,10 +229,8 @@ void CPlateau::GenerateRandomLaby() {
 
 
 
-	//Commencer un while ici ? tant que on est pas revenu au point de départ
+	//do while : tant que on est pas revenu au point de départ
 	do {
-
-
 		//On choisi un mur a suppr
 		do {
 			choixMur = rand() % 4;
