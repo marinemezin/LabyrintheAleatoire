@@ -2,8 +2,8 @@
 #include <vector>
 #include "CCellule.h"
 
-static const int LIGNE = 10;
-static const int COLONNE = 15;
+static const int LIGNE = 8;
+static const int COLONNE = 25;
 
 
 class CPlateau
@@ -19,6 +19,8 @@ private :
 	int visites[LIGNE*COLONNE][2];
 	int nbvisites;
 
+	void initialisationDepArr();
+
 public : 
 	CPlateau();
 	~CPlateau();
@@ -26,6 +28,5 @@ public :
 	void detruiremurhaut(int ligne, int colonne);
 	void detruiremurdroit(int ligne, int colonne);
 	void detruiremurgauche(int ligne, int colonne);
-	void parcoursplateau();
 	void afficheplateau();
 };

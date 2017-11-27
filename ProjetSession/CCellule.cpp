@@ -75,3 +75,23 @@ bool CCellule::getMurGauche()
 {
 	return murgauche;
 }
+
+void CCellule::setMurDroit(bool valeur)
+{
+	murdroit = valeur;
+}
+
+void CCellule::setMurGauche(bool valeur)
+{
+	murgauche = valeur;
+}
+
+void CCellule::setMurHaut(bool valeur)
+{
+	murhaut = valeur;
+}
+
+void CCellule::setMurBas(bool valeur)
+{
+	murbas = valeur;
+}

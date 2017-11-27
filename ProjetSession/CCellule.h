@@ -30,4 +30,8 @@ public:
 	bool getMurBas();
 	bool getMurDroit();
 	bool getMurGauche();
+	void setMurDroit(bool valeur);
+	void setMurGauche(bool valeur);
+	void setMurHaut(bool valeur);
+	void setMurBas(bool valeur);
 };
