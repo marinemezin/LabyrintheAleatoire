@@ -18,9 +18,10 @@ private :
 	int visites[LIGNE*COLONNE][2];
 	int nbVisites;
 
-	void InitialisationDepArr();
 	void GenerateRandomLaby();
 	bool IsVisited(int ligNew, int colNew);
+	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
+	CCellule* RecupererCelluleDavant();
 
 	static int firstInit;
 

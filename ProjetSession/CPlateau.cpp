@@ -1,15 +1,18 @@
 #include "CPlateau.h"
 #include <iostream>
 #include <string>
+#include <stdlib.h> /*srand, rand*/
+#include <stdio.h> /*NULL*/
+#include <time.h> /*time*/
 
 using namespace std;
 
-static int fistInit = 0;
+int CPlateau::firstInit = 0;
 
 CPlateau::CPlateau() {
 	if(firstInit == 0) { 
 		firstInit = 1;
-		srand(NULL);
+		srand(time(NULL));
 	}
 
 	for (int i = 0; i < LIGNE; i++) {
@@ -17,14 +20,18 @@ CPlateau::CPlateau() {
 			plateau[i][j] = new CCellule(i, j);
 		}
 	}
-	ligDep = LIGNE/2 -LIGNE%2; //a modif pour que ça soit random entre 0 et LIGNE non inclu
+	ligDep = rand() % LIGNE;
 	colDep = 0;
-	ligArr = ligDep; //a modif pour que ça soit random entre 0 et LIGNE non inclu
+	ligArr = 0;
 	colArr = COLONNE - 1;
 	ligActuelle = ligDep;
 	colActuelle = colDep;
 
-	//Liste ordonnée des cases visitées
+	//Initialiser le départ
+	plateau[ligDep][colDep]->SetMurDroit(false);
+
+	//Liste ordonnée des cases visitées // a revoir
+	//Pourquoi ne pas faire un tableau de cellule ?
 	visites[LIGNE*COLONNE][2];
 	visites[0][0] = ligDep;
 	visites[0][1] = colDep;
@@ -36,10 +43,9 @@ CPlateau::CPlateau() {
 	//?? why ? ne faut-il pas modifier la valeur de la première case dans ce cas et mettre une valeur dans le tableau ?
 	nbVisites = 1;
 
-	InitialisationDepArr();
-	GenerateRandomLaby();
+	//GenerateRandomLaby();
 	//Test
-	/**DetruireMurGauche(ligDep, colDep);
+	/**/DetruireMurGauche(ligDep, colDep);
 	DetruireMurBas(ligDep, colDep + 1);
 	DetruireMurGauche(ligDep + 1, colDep + 1);
 	DetruireMurGauche(ligDep + 1, colDep + 2);
@@ -166,13 +172,23 @@ void CPlateau::AfficheElse(int i, int j) {
 	else { cout << "  "; }
 }
 
-void CPlateau::InitialisationDepArr() {
-	plateau[ligDep][colDep]->SetMurDroit(false);
-	plateau[ligArr][colArr]->SetMurGauche(false);
-}
-
 bool CPlateau::IsVisited(int ligNew, int colNew) {
 	return plateau[ligNew][colNew]->GetVisite();
+}
+
+void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int& javance)
+{
+	haut = 0;
+	bas = 0;
+	droit = 0;
+	gauche = 0;
+	javance = 0;
+}
+
+CCellule * CPlateau::RecupererCelluleDavant()
+{
+	return nullptr;
+	//return la cellule qui se trouve une case avant celle que l'on cherche
 }
 
 void CPlateau::GenerateRandomLaby() {
@@ -181,94 +197,118 @@ void CPlateau::GenerateRandomLaby() {
 	 * Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
 	 * L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
 	 */
-	
-	//Point de départ
+
+	 //Point de départ
 	CCellule* celluleActuelle = plateau[ligActuelle][colActuelle];
 
-
-	//Commencer un while ici ? tant que on est pas revenu au point de départ
-
-
-
-
 	//Mettre un compteur pour compter si les 4 cases adjacentes a ma case actuelle sont déjà visitées
-	int javance; //si on réussi à avancer dans une cellule non visitée
-	int bloquee; //a incrementer si on rencontre une case adjacente déjà visitée
+	int javance = 0; //si on réussi à avancer dans une cellule non visitée, peut être pourra être enlevee
+	int bloquee = 0; //a incrementer si on rencontre une case adjacente déjà visitée
 	//Si bloquee = 4 on utilise le tableau pour retourner à la case d'avant (caseActuelle = cadeDavant)
 
 	//Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
-	int testHaut;
-	int testBas;
-	int testDroit;
-	int testGauche; //4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
-
-
-
+	int testHaut = 0;
+	int testBas = 0;
+	int testDroit = 0;
+	int testGauche = 0; //4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
 
 	//Choix du mur
-	int choixMur = rand() % 4; //entre 0 et 3
+	bool bonChoix = false;
+	int choixMur = 0; //entre 0 et 3
 	//0 Mur Haut
 	//1 Mur Gauche
 	//2 Mur Bas
 	//3 Mur Droit
 
-	//Faire une vérif préalable avant le switch
-	//Exemple si testBas = 1
-	//Cela veux dire que le bas a déjà été testé et c'est une case adjacente
-	//Donc on ne veux pas retirer le 2
-	//On refait un random sur choixMur jusqu'à ce qu'il soit différent de 2
-
-	switch (choixMur)
-	{
-	case 0:
-		if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { //si une case au dessus existe
-			if (!IsVisited(ligActuelle - 1, colActuelle)) { //si la case adjacente n'a pas été visitée
-				if (DetruireMurHaut(ligActuelle, colActuelle)) { //si le mur du haut a pu être détruit
-					ligActuelle -= 1; //on se déplace sur la case adjacente
-					celluleActuelle = plateau[ligActuelle][colActuelle];
-					//Ajouter la case dans les cases visitees : créer méthode pour
-				}
-			}
-		}
-		break;
-	case 1:
-		if ((colActuelle + 1 >= 0) && (colActuelle + 1 < COLONNE)) { //si une case à gauche existe
-			if (!IsVisited(ligActuelle, colActuelle + 1)) { //si la case adjacente n'a pas été visitée
-				if (DetruireMurGauche(ligActuelle, colActuelle)) { //si le mur de gauche a pu être détruit
-					colActuelle += 1;
-					celluleActuelle = plateau[ligActuelle][colActuelle];
-					//Ajouter la case dans les cases visitees : créer méthode pour
-				}
-			}
-		}
-		break;
-	case 2:
-		if ((ligActuelle + 1 >= 0) && (ligActuelle + 1 < LIGNE)) { //si une case en dessous existe
-			if (!IsVisited(ligActuelle + 1, colActuelle)) { //si la case adjacente n'a pas été visitée
-				if (DetruireMurBas(ligActuelle, colActuelle)) { //si le mur du bas a pu être détruit
-					ligActuelle += 1;
-					celluleActuelle = plateau[ligActuelle][colActuelle];
-					//Ajouter la case dans les cases visitees : créer méthode pour
-				}
-			}
-		}
-		break;
-	case 3:
-		if ((colActuelle - 1 >= 0) && (colActuelle - 1 < COLONNE)) { //si une case à droite existe
-			if (!IsVisited(ligActuelle, colActuelle - 1)) { //si la case adjacente n'a pas été visitée
-				if (DetruireMurDroit(ligActuelle, colActuelle)) { //si le mur de droite a pu être détruit
-					colActuelle -= 1;
-					celluleActuelle = plateau[ligActuelle][colActuelle];
-					//Ajouter la case dans les cases visitees : créer méthode pour
-				}
-			}
-		}
-		break;
-	default:
-		break;
-	}
 
 
-	//En dehors du while
-	//Créer la sortie qui a pour colonne = COLONNE - 1; et ligne aléatoire entre 0 et LIGNE -1
+	//Commencer un while ici ? tant que on est pas revenu au point de départ
+	do {
+
+
+		//On choisi un mur a suppr
+		do {
+			choixMur = rand() % 4;
+			if ((testHaut == 0) && (choixMur == 0)) { bonChoix = true; }
+			else if ((testGauche == 0) && (choixMur == 1)) { bonChoix = true; }
+			else if ((testBas == 0) && (choixMur == 2)) { bonChoix = true; }
+			else if ((testDroit == 0) && (choixMur == 3)) { bonChoix = true; }
+		} while (!bonChoix);
+
+		if ((testHaut == 0) || (testBas == 0) || (testDroit == 0) || (testGauche == 0)) { //s'il reste des cases non visitées autour
+			switch (choixMur)
+			{
+			case 0:
+				if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { //si une case au dessus existe
+					if (!IsVisited(ligActuelle - 1, colActuelle)) { //si la case adjacente n'a pas été visitée
+						if (DetruireMurHaut(ligActuelle, colActuelle)) { //si le mur du haut a pu être détruit
+							ligActuelle -= 1; //on se déplace sur la case adjacente
+							celluleActuelle = plateau[ligActuelle][colActuelle];
+							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
+							javance = 1;
+						}
+					}
+					else { testHaut = 1; }
+				}
+				else { testHaut = 1; }
+				break;
+			case 1:
+				if ((colActuelle + 1 >= 0) && (colActuelle + 1 < COLONNE)) { //si une case à gauche existe
+					if (!IsVisited(ligActuelle, colActuelle + 1)) { //si la case adjacente n'a pas été visitée
+						if (DetruireMurGauche(ligActuelle, colActuelle)) { //si le mur de gauche a pu être détruit
+							colActuelle += 1;
+							celluleActuelle = plateau[ligActuelle][colActuelle];
+							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
+							javance = 1;
+						}
+					}
+					else { testGauche = 1; }
+				}
+				else { testGauche = 1; }
+				break;
+			case 2:
+				if ((ligActuelle + 1 >= 0) && (ligActuelle + 1 < LIGNE)) { //si une case en dessous existe
+					if (!IsVisited(ligActuelle + 1, colActuelle)) { //si la case adjacente n'a pas été visitée
+						if (DetruireMurBas(ligActuelle, colActuelle)) { //si le mur du bas a pu être détruit
+							ligActuelle += 1;
+							celluleActuelle = plateau[ligActuelle][colActuelle];
+							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
+							javance = 1;
+						}
+					}
+					else { testBas = 1; }
+				}
+				else { testBas = 1; }
+				break;
+			case 3:
+				if ((colActuelle - 1 >= 0) && (colActuelle - 1 < COLONNE)) { //si une case à droite existe
+					if (!IsVisited(ligActuelle, colActuelle - 1)) { //si la case adjacente n'a pas été visitée
+						if (DetruireMurDroit(ligActuelle, colActuelle)) { //si le mur de droite a pu être détruit
+							colActuelle -= 1;
+							celluleActuelle = plateau[ligActuelle][colActuelle];
+							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
+							javance = 1;
+						}
+					}
+					else { testDroit = 1; }
+				}
+				else { testDroit = 1; }
+				break;
+			default:
+				break;
+			}
+		}
+		else { //On ne peux plus avancer dans une case non visitée, on reviens en arrière
+			//TODO : revoir le else
+			celluleActuelle = RecupererCelluleDavant();
+			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
+		}
+		if(javance = 1){ 
+			ResetValues(testHaut, testBas, testDroit, testGauche, javance); 
+		}
+	} while (celluleActuelle != plateau[ligDep][colDep]);
+
+	//Création de la sortie
+	int ligArr = rand() % LIGNE;
+	plateau[ligArr][colArr]->SetMurGauche(false);
 }

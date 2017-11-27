@@ -17,7 +17,7 @@ pour passer de l'un a l'autre on fait passer le bonhomme dans sont centre
 */
 
 /* 
-Implémenter GenerateRandomLaby dans CPlateau
+Réfléchir à la manière d'enregistrer les cases visitées
 Commencer à réfléchir aux méthodes de CJoueur (déplacer, ...)
 Réfléchir pour interface, couvrir une partie du labyrinthe, etc...
 */
