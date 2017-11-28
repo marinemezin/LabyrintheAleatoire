@@ -37,10 +37,9 @@ CPlateau::CPlateau() {
 		visites[i] = 0;
 	}
 
-	//?? why ? ne faut-il pas modifier la valeur de la première case dans ce cas et mettre une valeur dans le tableau ?
 	nbVisites = 1;
 
-	//GenerateRandomLaby();
+	GenerateRandomLaby();
 
 	//Test
 	/**DetruireMurGauche(ligDep, colDep);
@@ -195,8 +194,15 @@ void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int
 
 CCellule * CPlateau::RecupererCelluleDavant(CCellule* oldCellule)
 {
-	return nullptr;
 	//return la cellule qui se trouve une case avant celle que l'on cherche
+	for (int i = 0; i < LIGNE * COLONNE; i++) {
+		if ((visites[i]->GetLigne() == oldCellule->GetLigne())
+			&& (visites[i]->GetColonne() == oldCellule->GetColonne())) {
+			if (i == 0) { return visites[i]; }
+			return visites[i - 1];
+		}
+	}
+	return nullptr; //security
 }
 
 void CPlateau::AjoutDansTableau(CCellule * cellule)
@@ -310,18 +316,17 @@ void CPlateau::GenerateRandomLaby() {
 			}
 		}
 		else { //On ne peux plus avancer dans une case non visitée, on reviens en arrière
-			//TODO : revoir le else
 			celluleActuelle = RecupererCelluleDavant(celluleActuelle);
 			ligActuelle = celluleActuelle->GetLigne();
 			colActuelle = celluleActuelle->GetColonne();
 			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
 		}
-		if(javance = 1){ 
+		if(javance == 1){ 
 			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
-			auMoinsBougeUneFois = true;
+			nbVisites++;
 			AjoutDansTableau(celluleActuelle);
 		}
-	} while ((celluleActuelle != plateau[ligDep][colDep]) && (!auMoinsBougeUneFois));
+	} while ((celluleActuelle != plateau[ligDep][colDep]) || (nbVisites < LIGNE * COLONNE));
 
 	//Création de la sortie
 	int ligArr = rand() % LIGNE;
