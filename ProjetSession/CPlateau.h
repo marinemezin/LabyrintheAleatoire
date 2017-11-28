@@ -15,13 +15,14 @@ private :
 	int colArr;
 	int ligActuelle;
 	int colActuelle; 
-	int visites[LIGNE*COLONNE][2];
+	CCellule* visites[LIGNE*COLONNE];
 	int nbVisites;
 
 	void GenerateRandomLaby();
 	bool IsVisited(int ligNew, int colNew);
 	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
-	CCellule* RecupererCelluleDavant();
+	CCellule* RecupererCelluleDavant(CCellule* oldCellule);
+	void AjoutDansTableau(CCellule* cellule);
 
 	static int firstInit;
 

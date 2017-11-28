@@ -19,6 +19,8 @@ public:
 	bool GetMurDroit();
 	bool GetMurGauche();
 	bool GetVisite();
+	int GetLigne();
+	int GetColonne();
 	void SetVisite(bool valeur);
 	void SetMurDroit(bool valeur);
 	void SetMurGauche(bool valeur);

@@ -30,14 +30,11 @@ CPlateau::CPlateau() {
 	//Initialiser le départ
 	plateau[ligDep][colDep]->SetMurDroit(false);
 
-	//Liste ordonnée des cases visitées // a revoir
-	//Pourquoi ne pas faire un tableau de cellule ?
-	visites[LIGNE*COLONNE][2];
-	visites[0][0] = ligDep;
-	visites[0][1] = colDep;
-	for (int i = 1; i < LIGNE*COLONNE; i++) {
-		visites[i][0] = 0;
-		visites[i][1] = 0;
+	//Liste ordonnée des cases visitées
+	//Initialisation
+	visites[LIGNE*COLONNE];
+	for (int i = 0; i < LIGNE*COLONNE; i++) {
+		visites[i] = 0;
 	}
 
 	//?? why ? ne faut-il pas modifier la valeur de la première case dans ce cas et mettre une valeur dans le tableau ?
@@ -71,11 +68,12 @@ bool CPlateau::DetruireMurBas(int ligne, int colonne) {
 		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
-		plateau[ligne][colonne]->SetMurBas(false);
 		if (ligne + 1 < LIGNE) {
+			plateau[ligne][colonne]->SetMurBas(false);
 			plateau[ligne + 1][colonne]->SetMurHaut(false);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	catch (char* const e) {
 		cerr << e << endl;
@@ -88,11 +86,12 @@ bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
 		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
-		plateau[ligne][colonne]->SetMurHaut(false);
 		if (ligne - 1 >= 0) {
+			plateau[ligne][colonne]->SetMurHaut(false);
 			plateau[ligne - 1][colonne]->SetMurBas(false);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	catch (char* const e) {
 		cerr << e << endl;
@@ -105,11 +104,12 @@ bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
 		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
-		plateau[ligne][colonne]->SetMurDroit(false);
 		if (colonne - 1 >= 0) {
+			plateau[ligne][colonne]->SetMurDroit(false);
 			plateau[ligne][colonne - 1]->SetMurGauche(false);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	catch (char* const e) {
 		cerr << e << endl;
@@ -122,11 +122,12 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 		if ((ligne < 0) || (ligne >= LIGNE) || (colonne < 0) || (colonne >= COLONNE)) {
 			throw "ERROR : index outside of the range";
 		}
-		plateau[ligne][colonne]->SetMurGauche(false);
 		if (colonne + 1 < COLONNE) {
+			plateau[ligne][colonne]->SetMurGauche(false);
 			plateau[ligne][colonne + 1]->SetMurDroit(false);
+			return true;
 		}
-		return true;
+		return false;
 	}
 	catch (char* const e) {
 		cerr << e << endl;
@@ -192,10 +193,22 @@ void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int
 	javance = 0;
 }
 
-CCellule * CPlateau::RecupererCelluleDavant()
+CCellule * CPlateau::RecupererCelluleDavant(CCellule* oldCellule)
 {
 	return nullptr;
 	//return la cellule qui se trouve une case avant celle que l'on cherche
+}
+
+void CPlateau::AjoutDansTableau(CCellule * cellule)
+{
+	cellule->SetVisite(true);
+	bool ajoute = false;
+	for (int i = 0; i < LIGNE*COLONNE; i++) {
+		if ((visites[i] == 0) && (!ajoute)) {
+			visites[i] = cellule;
+			ajoute = true;
+		}
+	}
 }
 
 void CPlateau::GenerateRandomLaby() {
@@ -210,15 +223,12 @@ void CPlateau::GenerateRandomLaby() {
 
 	//Mettre un compteur pour compter si les 4 cases adjacentes a ma case actuelle sont déjà visitées
 	int javance = 0; //si on réussi à avancer dans une cellule non visitée, peut être pourra être enlevee
-	int bloquee = 0; //a incrementer si on rencontre une case adjacente déjà visitée
-	//Si bloquee = 4 on utilise le tableau pour retourner à la case d'avant (caseActuelle = cadeDavant)
 
 	//Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
-	int testHaut = 0;
-	int testBas = 0;
-	int testDroit = 0;
-	int testGauche = 0; //4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
+	int testHaut = 0, testBas = 0, testDroit = 0, testGauche = 0;
+	//4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
 
+	bool auMoinsBougeUneFois = false;
 	//Choix du mur
 	bool bonChoix = false;
 	int choixMur = 0; //entre 0 et 3
@@ -249,7 +259,6 @@ void CPlateau::GenerateRandomLaby() {
 						if (DetruireMurHaut(ligActuelle, colActuelle)) { //si le mur du haut a pu être détruit
 							ligActuelle -= 1; //on se déplace sur la case adjacente
 							celluleActuelle = plateau[ligActuelle][colActuelle];
-							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
 							javance = 1;
 						}
 					}
@@ -263,7 +272,6 @@ void CPlateau::GenerateRandomLaby() {
 						if (DetruireMurGauche(ligActuelle, colActuelle)) { //si le mur de gauche a pu être détruit
 							colActuelle += 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
-							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
 							javance = 1;
 						}
 					}
@@ -277,7 +285,6 @@ void CPlateau::GenerateRandomLaby() {
 						if (DetruireMurBas(ligActuelle, colActuelle)) { //si le mur du bas a pu être détruit
 							ligActuelle += 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
-							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
 							javance = 1;
 						}
 					}
@@ -291,7 +298,6 @@ void CPlateau::GenerateRandomLaby() {
 						if (DetruireMurDroit(ligActuelle, colActuelle)) { //si le mur de droite a pu être détruit
 							colActuelle -= 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
-							//TODO : Ajouter la case dans les cases visitees : créer méthode pour
 							javance = 1;
 						}
 					}
@@ -305,13 +311,17 @@ void CPlateau::GenerateRandomLaby() {
 		}
 		else { //On ne peux plus avancer dans une case non visitée, on reviens en arrière
 			//TODO : revoir le else
-			celluleActuelle = RecupererCelluleDavant();
+			celluleActuelle = RecupererCelluleDavant(celluleActuelle);
+			ligActuelle = celluleActuelle->GetLigne();
+			colActuelle = celluleActuelle->GetColonne();
 			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
 		}
 		if(javance = 1){ 
-			ResetValues(testHaut, testBas, testDroit, testGauche, javance); 
+			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
+			auMoinsBougeUneFois = true;
+			AjoutDansTableau(celluleActuelle);
 		}
-	} while (celluleActuelle != plateau[ligDep][colDep]);
+	} while ((celluleActuelle != plateau[ligDep][colDep]) && (!auMoinsBougeUneFois));
 
 	//Création de la sortie
 	int ligArr = rand() % LIGNE;

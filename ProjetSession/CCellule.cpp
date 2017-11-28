@@ -34,6 +34,16 @@ bool CCellule::GetVisite()
 	return visite;
 }
 
+int CCellule::GetLigne()
+{
+	return ligne;
+}
+
+int CCellule::GetColonne()
+{
+	return colonne;
+}
+
 void CCellule::SetVisite(bool valeur)
 {
 	visite = valeur;
