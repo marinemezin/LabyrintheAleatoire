@@ -35,4 +35,5 @@ public :
 	bool DetruireMurGauche(int ligne, int colonne);
 	void AffichePlateau();
 	void AfficheElse(int i, int j);
+	void AffichePlateau2();
 };

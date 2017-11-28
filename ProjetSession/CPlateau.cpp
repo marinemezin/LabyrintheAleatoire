@@ -60,6 +60,9 @@ CPlateau::~CPlateau() {
 			delete plateau[i][j];
 		}
 	}
+	for (int i = 0; i < LIGNE * COLONNE; i++) {
+		delete visites[i];
+	}
 }
 
 bool CPlateau::DetruireMurBas(int ligne, int colonne) {
@@ -139,7 +142,7 @@ void CPlateau::AffichePlateau() {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du haut
 			if (plateau[i][j]->GetMurHaut()) { cout << "* * * "; }
-			else { AfficheElse(i, j); }
+			else { cout << "*   * "; }
 		}
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
@@ -154,29 +157,10 @@ void CPlateau::AffichePlateau() {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du bas
 			if (plateau[i][j]->GetMurBas()) { cout << "* * * "; }
-			else { AfficheElse(i, j); }
+			else { cout << "*   * "; }
 		}
 		cout << endl;
 	}
-}
-
-void CPlateau::AfficheElse(int i, int j) {
-	if (plateau[i][j]->GetMurDroit()) { cout << "*   "; }
-	else if ((!plateau[i][j]->GetMurDroit()) && (i + 1 >= LIGNE)) { //si je suis sur la dernière ligne
-		cout << "*   ";
-	}
-	else if ((!plateau[i][j]->GetMurDroit()) && (plateau[i + 1][j]->GetMurDroit())) {
-		cout << "*   ";
-	}
-	else { cout << "    "; }
-	if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
-	else if ((!plateau[i][j]->GetMurGauche()) && (i + 1 >= LIGNE)) {
-		cout << "* ";
-	}
-	else if ((!plateau[i][j]->GetMurGauche()) && (plateau[i + 1][j]->GetMurGauche())) {
-		cout << "* ";
-	}
-	else { cout << "  "; }
 }
 
 bool CPlateau::IsVisited(int ligNew, int colNew) {
