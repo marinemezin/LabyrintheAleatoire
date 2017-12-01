@@ -109,6 +109,38 @@ void update(HWND hwnd)
 	}
 }
 
+void DrawCenteredText(HWND hWnd, char *text)
+{
+	HDC hDC;
+	RECT rcClient;
+	GetClientRect(hWnd, &rcClient);
+	hDC = GetDC(hWnd);
+	SetTextColor(hDC, 0x000000FF);
+	SetBkMode(hDC, TRANSPARENT);
+	SetTextAlign(hDC, TA_CENTER | TA_TOP);
+	TextOut(hDC, (int)((float)rcClient.right / 2), 5, text, strlen(text));
+	ReleaseDC(hWnd, hDC);
+}
+
+void DrawRectangle(HWND hWnd, int xInit, int yInit)
+{
+	RECT clientRect;
+	HBRUSH hBrush;
+	HPEN hPen;
+	// Fill the client area with a brush
+	GetClientRect(hWnd, &clientRect);
+	//Pour modifier la couleur de fond
+	/*HRGN bgRgn = CreateRectRgnIndirect(&clientRect);
+	hBrush = CreateSolidBrush(RGB(200, 200, 200));
+	FillRgn(GetDC(hWnd), bgRgn, hBrush);
+	*/
+
+	hPen = CreatePen(PS_DOT, 1, RGB(0, 255, 0));
+	SelectObject(GetDC(hWnd), hPen);
+	SetBkColor(GetDC(hWnd), RGB(0, 0, 0));
+	Rectangle(GetDC(hWnd), 10, 10, 200, 200);
+}
+
 
 // C'est le main de windows
 int WINAPI WinMain(HINSTANCE hInstance,
@@ -172,6 +204,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	UpdateWindow(hwnd);							// mise à jour
 
 	//new std::thread(update, hwnd);
+	DrawCenteredText(hwnd, "Bienvenue sur le jeu de labyrinthe !!");
+	DrawRectangle(hwnd, 10000, 10000);
 
 	SetTimer(hwnd, TIMER_1, 10000, (TIMERPROC)NULL);
 	// Step 3: The Message Loop
@@ -179,8 +213,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	{
 		TranslateMessage(&Msg);					// on fetch le message
 		DispatchMessage(&Msg);					// On agit
-		if ((Msg.message == WM_TIMER) && (Msg.wParam == TIMER_1) )
-			MessageBox(NULL, "Déjà une minute de passé!", "Info", MB_OK);
+		/*if ((Msg.message == WM_TIMER) && (Msg.wParam == TIMER_1) )
+			MessageBox(NULL, "Déjà une minute de passé!", "Info", MB_OK);*/
 	}
 	return 1;
 }
