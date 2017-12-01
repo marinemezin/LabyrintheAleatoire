@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BFE77238-CF05-4BDF-ABC6-B2711E7FD142}</ProjectGuid>
+    <ProjectGuid>{BF8F541B-70CD-4B96-811E-B0C7F4C23045}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ProjetJoli</RootNamespace>
+    <RootNamespace>Labyrinthe</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -143,13 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ProjetJoli.h" />
+    <ClInclude Include="Labyrinthe.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ProjetJoli.cpp" />
+    <ClCompile Include="Labyrinthe.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -158,10 +158,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ProjetJoli.rc" />
+    <ResourceCompile Include="Labyrinthe.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="ProjetJoli.ico" />
+    <Image Include="Labyrinthe.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

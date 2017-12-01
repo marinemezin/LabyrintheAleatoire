@@ -24,7 +24,7 @@
     <ClInclude Include="resource.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ProjetJoli.h">
+    <ClInclude Include="Labyrinthe.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,12 +32,12 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ProjetJoli.cpp">
+    <ClCompile Include="Labyrinthe.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ProjetJoli.rc">
+    <ResourceCompile Include="Labyrinthe.rc">
       <Filter>Fichiers de ressources</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -45,7 +45,7 @@
     <Image Include="small.ico">
       <Filter>Fichiers de ressources</Filter>
     </Image>
-    <Image Include="ProjetJoli.ico">
+    <Image Include="Labyrinthe.ico">
       <Filter>Fichiers de ressources</Filter>
     </Image>
   </ItemGroup>
