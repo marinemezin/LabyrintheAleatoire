@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BF8F541B-70CD-4B96-811E-B0C7F4C23045}</ProjectGuid>
+    <ProjectGuid>{E26D21D3-4251-4FCE-834E-819BB0806696}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Labyrinthe</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
