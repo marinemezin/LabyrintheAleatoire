@@ -8,6 +8,7 @@ int main()
 	CPlateau* monPlateau = new CPlateau();
 	//monPlateau->AffichePlateau();
 	monPlateau->deplacementJoueur();
+	//monPlateau->timer();
 	system("PAUSE");
 	return 0;
 }

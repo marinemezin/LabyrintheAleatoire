@@ -22,14 +22,17 @@ private:
 	CCellule* visites[LIGNE*COLONNE];
 	int nbVisites;
 	CJoueur* monJoueur;
+	thread* temps;
 
 	void GenerateRandomLaby();
 	bool IsVisited(int ligNew, int colNew);
 	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
 	CCellule* RecupererCelluleDavant(CCellule* oldCellule);
 	void AjoutDansTableau(CCellule* cellule);
+	void timer();
 
 	static int firstInit;
+	static mutex Verrou;
 
 public:
 	CPlateau();
@@ -42,5 +45,4 @@ public:
 	void AffichePlateau2();
 	void deplacementJoueur();
 	bool aGagne();
-	//static mutex VerrouJeu;
 };

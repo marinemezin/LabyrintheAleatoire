@@ -112,12 +112,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CCellule.cpp" />
+    <ClCompile Include="CEcran.cpp" />
     <ClCompile Include="CJoueur.cpp" />
     <ClCompile Include="CPlateau.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCellule.h" />
+    <ClInclude Include="CCoul.h" />
+    <ClInclude Include="CEcran.h" />
     <ClInclude Include="CJoueur.h" />
     <ClInclude Include="CPlateau.h" />
   </ItemGroup>

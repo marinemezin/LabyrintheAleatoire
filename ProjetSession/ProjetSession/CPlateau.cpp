@@ -1,13 +1,15 @@
 #include "CPlateau.h"
 #include <iostream>
 #include <string>
+#include <Windows.h>
+#include "CEcran.h"
 #include <stdlib.h> /*srand, rand*/
 #include <stdio.h> /*NULL*/
 #include <time.h> /*time*/
 
 using namespace std;
 
-//mutex CPlateau::VerrouJeu;
+mutex CPlateau::Verrou;
 
 int CPlateau::firstInit = 0;
 const int aff = 3;
@@ -44,6 +46,7 @@ CPlateau::CPlateau() {
 
 	GenerateRandomLaby();
 	monJoueur = new CJoueur(ligDep, colDep);
+	temps = new thread(&CPlateau::timer, this);
 }
 
 
@@ -164,6 +167,9 @@ void CPlateau::AffichePlateau() {
 }
 
 void CPlateau::AffichePlateau2() {
+	Verrou.lock();
+	CEcran::ClrScr();
+	CEcran::Gotoxy(0, 0);
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du haut
@@ -203,6 +209,7 @@ void CPlateau::AffichePlateau2() {
 		}
 		cout << endl;
 	}
+	Verrou.unlock();
 }
 
 bool CPlateau::IsVisited(int ligNew, int colNew) {
@@ -377,28 +384,24 @@ void CPlateau::deplacementJoueur() {
 		case 122: //z
 			if (!(plateau[ligne][colonne]->GetMurHaut())) {
 				monJoueur->deplacement(ligne - 1, colonne);
-				system("cls");
 				AffichePlateau2();
 			}
 			break;
 		case 113: //q
 			if (!(plateau[ligne][colonne]->GetMurDroit()) && (colonne > 0)) {
 				monJoueur->deplacement(ligne, colonne - 1);
-				system("cls");
 				AffichePlateau2();
 			}
 			break;
 		case 115: //s
 			if (!(plateau[ligne][colonne]->GetMurBas())) {
 				monJoueur->deplacement(ligne + 1, colonne);
-				system("cls");
 				AffichePlateau2();
 			}
 			break;
 		case 100: //d
 			if (!(plateau[ligne][colonne]->GetMurGauche())) {
 				monJoueur->deplacement(ligne, colonne + 1);
-				system("cls");
 				AffichePlateau2();
 			}
 			break;
@@ -406,5 +409,30 @@ void CPlateau::deplacementJoueur() {
 			break;
 		}
 		moncarac = _getch();
+	}
+}
+
+void CPlateau::timer() {
+	int milliseconds = 0;
+	int seconds = 0;
+	int prevSeconds = -1;
+	int minutes = 0;
+	while (minutes != 1) {
+		if (milliseconds == 10) {
+			++seconds;
+			milliseconds = 0;
+		}
+		if (seconds == 60) {
+			++minutes;
+			seconds = 0;
+		}
+		if (prevSeconds != seconds) {
+			Verrou.lock();
+			CEcran::Gotoxy(0, 25);
+			cout << "Timer : " << minutes << ":" << seconds;
+			Verrou.unlock();
+		}
+		++milliseconds;
+		Sleep(100);
 	}
 }
