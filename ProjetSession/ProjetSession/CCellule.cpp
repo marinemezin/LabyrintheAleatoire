@@ -1,6 +1,6 @@
 #include "CCellule.h"
 
-CCellule::CCellule(int lig, int col){
+CCellule::CCellule(int lig, int col) {
 	visite = false;
 	ligne = lig;
 	colonne = col;
@@ -10,7 +10,7 @@ CCellule::CCellule(int lig, int col){
 	murGauche = true;
 }
 
-CCellule::~CCellule(){
+CCellule::~CCellule() {
 }
 
 bool CCellule::GetMurHaut() {

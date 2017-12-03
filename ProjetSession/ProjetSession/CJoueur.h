@@ -1,6 +1,8 @@
 #pragma once
 
 
+using namespace std;
+
 class CJoueur
 {
 private:
@@ -9,6 +11,9 @@ private:
 	int score;
 
 public:
-	CJoueur(int ligDep, int colDep);
+	CJoueur(int ligdep, int coldep);
 	~CJoueur();
+	void deplacement(int lig, int col);
+	int getligne();
+	int getcolonne();
 };

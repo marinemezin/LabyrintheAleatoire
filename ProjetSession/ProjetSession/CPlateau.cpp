@@ -7,10 +7,13 @@
 
 using namespace std;
 
+//mutex CPlateau::VerrouJeu;
+
 int CPlateau::firstInit = 0;
+const int aff = 3;
 
 CPlateau::CPlateau() {
-	if(firstInit == 0) { 
+	if (firstInit == 0) {
 		firstInit = 1;
 		srand(time(NULL));
 	}
@@ -40,6 +43,7 @@ CPlateau::CPlateau() {
 	nbVisites = 1;
 
 	GenerateRandomLaby();
+	monJoueur = new CJoueur(ligDep, colDep);
 }
 
 
@@ -136,8 +140,15 @@ void CPlateau::AffichePlateau() {
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
 			//Mur droit et case centre (correspond à l'espace)
-			if (plateau[i][j]->GetMurDroit()) { cout << "*   "; }
-			else { cout << "    "; }
+			if (plateau[i][j]->GetMurDroit()) { cout << "* "; }
+			else { cout << "  "; }
+			//Le joueur
+			if (monJoueur->getligne() == i && monJoueur->getcolonne() == j) {
+				cout << "O ";
+			}
+			else {
+				cout << "  ";
+			}
 			//Mur gauche
 			if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
 			else { cout << "  "; }
@@ -147,6 +158,48 @@ void CPlateau::AffichePlateau() {
 			//Affichage du mur du bas
 			if (plateau[i][j]->GetMurBas()) { cout << "* * * "; }
 			else { cout << "*   * "; }
+		}
+		cout << endl;
+	}
+}
+
+void CPlateau::AffichePlateau2() {
+	for (int i = 0; i < LIGNE; i++) {
+		for (int j = 0; j < COLONNE; j++) {
+			//Affichage du mur du haut
+			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+				if (plateau[i][j]->GetMurHaut()) { cout << "* * * "; }
+				else { cout << "*   * "; }
+			}
+			else { cout << "      "; }
+		}
+		cout << endl;
+		for (int j = 0; j < COLONNE; j++) {
+			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+				//Mur droit et case centre (correspond à l'espace)
+				if (plateau[i][j]->GetMurDroit()) { cout << "* "; }
+				else { cout << "  "; }
+				//Le joueur
+				if (monJoueur->getligne() == i && monJoueur->getcolonne() == j) {
+					cout << "O ";
+				}
+				else {
+					cout << "  ";
+				}
+				//Mur gauche
+				if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
+				else { cout << "  "; }
+			}
+			else { cout << "      "; }
+		}
+		cout << endl;
+		for (int j = 0; j < COLONNE; j++) {
+			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+				//Affichage du mur du bas
+				if (plateau[i][j]->GetMurBas()) { cout << "* * * "; }
+				else { cout << "*   * "; }
+			}
+			else { cout << "      "; }
 		}
 		cout << endl;
 	}
@@ -192,18 +245,18 @@ void CPlateau::AjoutDansTableau(CCellule * cellule)
 
 void CPlateau::GenerateRandomLaby() {
 	/* Choisissez un point de départ dans le champ.
-	 * Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
-	 * Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
-	 * L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
-	 */
+	* Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
+	* Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
+	* L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
+	*/
 
-	 //Point de départ
+	//Point de départ
 	CCellule* celluleActuelle = plateau[ligActuelle][colActuelle];
 
 	//Mettre un compteur pour compter si les 4 cases adjacentes a ma case actuelle sont déjà visitées
 	int javance = 0; //si on réussi à avancer dans une cellule non visitée, peut être pourra être enlevee
 
-	//Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
+					 //Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
 	int testHaut = 0, testBas = 0, testDroit = 0, testGauche = 0;
 	//4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
 
@@ -211,14 +264,14 @@ void CPlateau::GenerateRandomLaby() {
 	//Choix du mur
 	bool bonChoix = false;
 	int choixMur = 0; //entre 0 et 3
-	//0 Mur Haut
-	//1 Mur Gauche
-	//2 Mur Bas
-	//3 Mur Droit
+					  //0 Mur Haut
+					  //1 Mur Gauche
+					  //2 Mur Bas
+					  //3 Mur Droit
 
 
 
-	//do while : tant que on est pas revenu au point de départ
+					  //do while : tant que on est pas revenu au point de départ
 	do {
 		//On choisi un mur a suppr
 		do {
@@ -294,7 +347,7 @@ void CPlateau::GenerateRandomLaby() {
 			colActuelle = celluleActuelle->GetColonne();
 			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
 		}
-		if(javance == 1){ 
+		if (javance == 1) {
 			ResetValues(testHaut, testBas, testDroit, testGauche, javance);
 			nbVisites++;
 			AjoutDansTableau(celluleActuelle);
@@ -302,6 +355,56 @@ void CPlateau::GenerateRandomLaby() {
 	} while ((celluleActuelle != plateau[ligDep][colDep]) || (nbVisites < LIGNE * COLONNE));
 
 	//Création de la sortie
-	int ligArr = rand() % LIGNE;
+	ligArr = rand() % LIGNE;
 	plateau[ligArr][colArr]->SetMurGauche(false);
+}
+
+bool CPlateau::aGagne() {
+	bool ok = false;
+	if ((monJoueur->getcolonne() == colArr) && (monJoueur->getligne() == ligArr)) {
+		ok = true;
+	}
+	return ok;
+}
+
+void CPlateau::deplacementJoueur() {
+	AffichePlateau2();
+	char moncarac = _getch();
+	while (!aGagne()) {
+		int ligne = monJoueur->getligne();
+		int colonne = monJoueur->getcolonne();
+		switch (moncarac) {
+		case 122: //z
+			if (!(plateau[ligne][colonne]->GetMurHaut())) {
+				monJoueur->deplacement(ligne - 1, colonne);
+				system("cls");
+				AffichePlateau2();
+			}
+			break;
+		case 113: //q
+			if (!(plateau[ligne][colonne]->GetMurDroit()) && (colonne > 0)) {
+				monJoueur->deplacement(ligne, colonne - 1);
+				system("cls");
+				AffichePlateau2();
+			}
+			break;
+		case 115: //s
+			if (!(plateau[ligne][colonne]->GetMurBas())) {
+				monJoueur->deplacement(ligne + 1, colonne);
+				system("cls");
+				AffichePlateau2();
+			}
+			break;
+		case 100: //d
+			if (!(plateau[ligne][colonne]->GetMurGauche())) {
+				monJoueur->deplacement(ligne, colonne + 1);
+				system("cls");
+				AffichePlateau2();
+			}
+			break;
+		default:
+			break;
+		}
+		moncarac = _getch();
+	}
 }

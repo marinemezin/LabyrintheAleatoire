@@ -1,22 +1,27 @@
 #pragma once
 #include <vector>
+#include <thread>
+#include <mutex>
+#include <conio.h>
 #include "CCellule.h"
+#include "CJoueur.h"
 
 static const int LIGNE = 8;
 static const int COLONNE = 15;
-
+using namespace std;
 class CPlateau
 {
-private : 
+private:
 	CCellule* plateau[LIGNE][COLONNE];
 	int ligDep;
 	int colDep;
 	int ligArr;
 	int colArr;
 	int ligActuelle;
-	int colActuelle; 
+	int colActuelle;
 	CCellule* visites[LIGNE*COLONNE];
 	int nbVisites;
+	CJoueur* monJoueur;
 
 	void GenerateRandomLaby();
 	bool IsVisited(int ligNew, int colNew);
@@ -26,7 +31,7 @@ private :
 
 	static int firstInit;
 
-public : 
+public:
 	CPlateau();
 	~CPlateau();
 	bool DetruireMurBas(int ligne, int colonne);
@@ -34,6 +39,8 @@ public :
 	bool DetruireMurDroit(int ligne, int colonne);
 	bool DetruireMurGauche(int ligne, int colonne);
 	void AffichePlateau();
-	void AfficheElse(int i, int j);
 	void AffichePlateau2();
+	void deplacementJoueur();
+	bool aGagne();
+	//static mutex VerrouJeu;
 };
