@@ -59,6 +59,8 @@ CPlateau::~CPlateau() {
 	for (int i = 0; i < LIGNE * COLONNE; i++) {
 		delete visites[i];
 	}
+	temps->detach();
+	delete temps;
 }
 
 bool CPlateau::DetruireMurBas(int ligne, int colonne) {
