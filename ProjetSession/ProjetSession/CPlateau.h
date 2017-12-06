@@ -23,6 +23,8 @@ private:
 	int nbVisites;
 	CJoueur* monJoueur;
 	thread* temps;
+	bool timeOver;
+	int seconds;
 
 	static int firstInit;
 	static mutex Verrou;
@@ -32,7 +34,6 @@ private:
 	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
 	CCellule* RecupererCelluleDavant(CCellule* oldCellule);
 	bool AjoutDansTableau(CCellule* cellule);
-	void Chronometre();
 
 public:
 	CPlateau();
@@ -41,8 +42,11 @@ public:
 	bool DetruireMurHaut(int ligne, int colonne);
 	bool DetruireMurDroit(int ligne, int colonne);
 	bool DetruireMurGauche(int ligne, int colonne);
-	//void AffichePlateau2();
+	//void AffichePlateau2(); //a garder !!!
 	void AffichePlateau();
 	void DeplacerJoueur();
 	bool aGagne();
+	int GetResultat();
+	void Chronometre();
+	void ResetPlateau();
 };

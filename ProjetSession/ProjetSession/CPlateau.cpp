@@ -12,6 +12,7 @@ using namespace std;
 mutex CPlateau::Verrou;
 int CPlateau::firstInit = 0;
 const int rayonAffichage = 2;
+const int DUREE_PARTIE = 30;
 
 CPlateau::CPlateau() {
 	if (firstInit == 0) {
@@ -30,6 +31,8 @@ CPlateau::CPlateau() {
 	colArr = COLONNE - 1;
 	ligActuelle = ligDep;
 	colActuelle = colDep;
+	timeOver = false;
+	seconds = 0;
 
 	//Initialiser le départ
 	plateau[ligDep][colDep]->SetMurDroit(false);
@@ -45,7 +48,6 @@ CPlateau::CPlateau() {
 
 	GenerateRandomLaby();
 	monJoueur = new CJoueur(ligDep, colDep);
-	temps = new thread(&CPlateau::Chronometre, this);
 }
 
 
@@ -162,7 +164,7 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 		}
 		cout << endl;
 	}
-}*/
+}*/ //a garder
 
 void CPlateau::AffichePlateau() {
 	Verrou.lock();
@@ -240,6 +242,41 @@ bool CPlateau::AjoutDansTableau(CCellule * cellule) {
 		}
 	}
 	return false;
+}
+
+void CPlateau::ResetPlateau() {
+	//Remet à jour les tableaux
+	for (int i = 0; i < LIGNE; i++) {
+		for (int j = 0; j < COLONNE; j++) {
+			delete plateau[i][j];
+			plateau[i][j] = new CCellule(i, j);
+		}
+	}
+	for (int i = 0; i < LIGNE * COLONNE; i++) {
+		visites[i] = 0;
+	}
+	//Remet à jour les variables
+	ligDep = rand() % LIGNE;
+	colDep = 0;
+	ligArr = rand() % LIGNE;;
+	colArr = COLONNE - 1;
+	ligActuelle = ligDep;
+	colActuelle = colDep;
+	timeOver = false;
+	seconds = 0;
+
+	//Reset Joueur
+	monJoueur->SetLigne(ligDep);
+	monJoueur->SetColonne(colDep);
+
+	//Initialiser le départ
+	plateau[ligDep][colDep]->SetMurDroit(false);
+
+	nbVisites = 1;
+
+	GenerateRandomLaby();
+
+	temps->join();
 }
 
 void CPlateau::GenerateRandomLaby() {
@@ -359,15 +396,22 @@ void CPlateau::GenerateRandomLaby() {
 
 bool CPlateau::aGagne() {
 	if ((monJoueur->GetColonne() == colArr) && (monJoueur->GetLigne() == ligArr)) {
+		monJoueur->SetScore(DUREE_PARTIE - seconds);
+		seconds = DUREE_PARTIE;
 		return true;
 	}
 	return false;
 }
 
+int CPlateau::GetResultat() {
+	return monJoueur->GetScore();
+}
+
 void CPlateau::DeplacerJoueur() {
+	temps = new thread(&CPlateau::Chronometre, this);
 	AffichePlateau();
 	char moncarac = _getch();
-	while (!aGagne()) {
+	while ((!aGagne()) && (!timeOver)) {
 		int ligne = monJoueur->GetLigne();
 		int colonne = monJoueur->GetColonne();
 		switch (moncarac) {
@@ -400,25 +444,23 @@ void CPlateau::DeplacerJoueur() {
 }
 
 void CPlateau::Chronometre() {
-	int milliseconds = 0;
-	int seconds = 0;
-	int prevSeconds = -1;
-	int minutes = 0;
-	while (seconds != 30) {
+	int milliseconds = 0, minutes = 0;
+	seconds = 0;
+	while (seconds < DUREE_PARTIE) {
 		if (milliseconds == 10) {
 			seconds++;
 			milliseconds = 0;
 		}
-		if (seconds == 60) {
+		/*if (seconds == 60) {
 			minutes++;
 			seconds = 0;
-		}
+		}*/
 		Verrou.lock();
 		CEcran::Gotoxy(0, 25);
-		cout << "Timer : " << minutes << ":" << seconds;
+		cout << "Timer : " << /*minutes << ":" <<*/ seconds;
 		Verrou.unlock();
 		++milliseconds;
 		Sleep(100);
 	}
-	throw "Temps ecoule!";
+	timeOver = true;
 }

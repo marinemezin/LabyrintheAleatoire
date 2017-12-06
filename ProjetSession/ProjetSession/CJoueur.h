@@ -16,4 +16,8 @@ public:
 	void Deplacement(int lig, int col);
 	int GetLigne();
 	int GetColonne();
+	int GetScore();
+	void SetScore(int value);
+	void SetLigne(int value);
+	void SetColonne(int value);
 };
