@@ -1,18 +1,17 @@
-#include "CPlateau.h"
 #include <iostream>
 #include <string>
 #include <Windows.h>
-#include "CEcran.h"
 #include <stdlib.h> /*srand, rand*/
 #include <stdio.h> /*NULL*/
 #include <time.h> /*time*/
+#include "CEcran.h"
+#include "CPlateau.h"
 
 using namespace std;
 
 mutex CPlateau::Verrou;
-
 int CPlateau::firstInit = 0;
-const int aff = 3;
+const int rayonAffichage = 2;
 
 CPlateau::CPlateau() {
 	if (firstInit == 0) {
@@ -27,7 +26,7 @@ CPlateau::CPlateau() {
 	}
 	ligDep = rand() % LIGNE;
 	colDep = 0;
-	ligArr = 0;
+	ligArr = rand() % LIGNE;;
 	colArr = COLONNE - 1;
 	ligActuelle = ligDep;
 	colActuelle = colDep;
@@ -46,7 +45,7 @@ CPlateau::CPlateau() {
 
 	GenerateRandomLaby();
 	monJoueur = new CJoueur(ligDep, colDep);
-	temps = new thread(&CPlateau::timer, this);
+	temps = new thread(&CPlateau::Chronometre, this);
 }
 
 
@@ -59,6 +58,7 @@ CPlateau::~CPlateau() {
 	for (int i = 0; i < LIGNE * COLONNE; i++) {
 		delete visites[i];
 	}
+	delete monJoueur;
 	temps->detach();
 	delete temps;
 }
@@ -76,7 +76,6 @@ bool CPlateau::DetruireMurBas(int ligne, int colonne) {
 		return false;
 	}
 	catch (char* const e) {
-		cerr << e << endl;
 		return false;
 	}
 }
@@ -94,7 +93,6 @@ bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
 		return false;
 	}
 	catch (char* const e) {
-		cerr << e << endl;
 		return false;
 	}
 }
@@ -112,7 +110,6 @@ bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
 		return false;
 	}
 	catch (char* const e) {
-		cerr << e << endl;
 		return false;
 	}
 }
@@ -130,12 +127,11 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 		return false;
 	}
 	catch (char* const e) {
-		cerr << e << endl;
 		return false;
 	}
 }
 
-void CPlateau::AffichePlateau() {
+/*void CPlateau::AffichePlateau2() {
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du haut
@@ -148,7 +144,7 @@ void CPlateau::AffichePlateau() {
 			if (plateau[i][j]->GetMurDroit()) { cout << "* "; }
 			else { cout << "  "; }
 			//Le joueur
-			if (monJoueur->getligne() == i && monJoueur->getcolonne() == j) {
+			if (monJoueur->GetLigne() == i && monJoueur->GetColonne() == j) {
 				cout << "O ";
 			}
 			else {
@@ -166,48 +162,45 @@ void CPlateau::AffichePlateau() {
 		}
 		cout << endl;
 	}
-}
+}*/
 
-void CPlateau::AffichePlateau2() {
+void CPlateau::AffichePlateau() {
 	Verrou.lock();
 	CEcran::ClrScr();
 	CEcran::Gotoxy(0, 0);
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			//Affichage du mur du haut
-			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+			if ((i > monJoueur->GetLigne() - rayonAffichage) && (i < monJoueur->GetLigne() + rayonAffichage) && (j > monJoueur->GetColonne() - rayonAffichage) && (j < monJoueur->GetColonne() + rayonAffichage)) {
 				if (plateau[i][j]->GetMurHaut()) { cout << "* * * "; }
 				else { cout << "*   * "; }
 			}
-			else { cout << "      "; }
+			else { cout << "------"; }
 		}
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
-			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+			if ((i > monJoueur->GetLigne() - rayonAffichage) && (i < monJoueur->GetLigne() + rayonAffichage) && (j > monJoueur->GetColonne() - rayonAffichage) && (j < monJoueur->GetColonne() + rayonAffichage)) {
 				//Mur droit et case centre (correspond à l'espace)
 				if (plateau[i][j]->GetMurDroit()) { cout << "* "; }
 				else { cout << "  "; }
 				//Le joueur
-				if (monJoueur->getligne() == i && monJoueur->getcolonne() == j) {
-					cout << "O ";
-				}
-				else {
-					cout << "  ";
-				}
+				if (monJoueur->GetLigne() == i 
+					&& monJoueur->GetColonne() == j) { cout << "O "; }
+				else { cout << "  "; }
 				//Mur gauche
 				if (plateau[i][j]->GetMurGauche()) { cout << "* "; }
 				else { cout << "  "; }
 			}
-			else { cout << "      "; }
+			else { cout << "------"; }
 		}
 		cout << endl;
 		for (int j = 0; j < COLONNE; j++) {
-			if ((i > monJoueur->getligne() - aff) && (i < monJoueur->getligne() + aff) && (j > monJoueur->getcolonne() - aff) && (j < monJoueur->getcolonne() + aff)) {
+			if ((i > monJoueur->GetLigne() - rayonAffichage) && (i < monJoueur->GetLigne() + rayonAffichage) && (j > monJoueur->GetColonne() - rayonAffichage) && (j < monJoueur->GetColonne() + rayonAffichage)) {
 				//Affichage du mur du bas
 				if (plateau[i][j]->GetMurBas()) { cout << "* * * "; }
 				else { cout << "*   * "; }
 			}
-			else { cout << "      "; }
+			else { cout << "------"; }
 		}
 		cout << endl;
 	}
@@ -227,29 +220,26 @@ void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int
 	javance = 0;
 }
 
-CCellule * CPlateau::RecupererCelluleDavant(CCellule* oldCellule)
-{
-	//return la cellule qui se trouve une case avant celle que l'on cherche
+CCellule * CPlateau::RecupererCelluleDavant(CCellule* oldCell) {
 	for (int i = 0; i < LIGNE * COLONNE; i++) {
-		if ((visites[i]->GetLigne() == oldCellule->GetLigne())
-			&& (visites[i]->GetColonne() == oldCellule->GetColonne())) {
+		if ((visites[i]->GetLigne() == oldCell->GetLigne())
+			&& (visites[i]->GetColonne() == oldCell->GetColonne())) {
 			if (i == 0) { return visites[i]; }
 			return visites[i - 1];
 		}
 	}
-	return nullptr; //security
+	return nullptr;
 }
 
-void CPlateau::AjoutDansTableau(CCellule * cellule)
-{
+bool CPlateau::AjoutDansTableau(CCellule * cellule) {
 	cellule->SetVisite(true);
-	bool ajoute = false;
 	for (int i = 0; i < LIGNE*COLONNE; i++) {
-		if ((visites[i] == 0) && (!ajoute)) {
+		if (visites[i] == 0) {
 			visites[i] = cellule;
-			ajoute = true;
+			return true;
 		}
 	}
+	return false;
 }
 
 void CPlateau::GenerateRandomLaby() {
@@ -280,7 +270,7 @@ void CPlateau::GenerateRandomLaby() {
 
 
 
-					  //do while : tant que on est pas revenu au point de départ
+	//do while : tant que on est pas revenu au point de départ
 	do {
 		//On choisi un mur a suppr
 		do {
@@ -364,77 +354,71 @@ void CPlateau::GenerateRandomLaby() {
 	} while ((celluleActuelle != plateau[ligDep][colDep]) || (nbVisites < LIGNE * COLONNE));
 
 	//Création de la sortie
-	ligArr = rand() % LIGNE;
 	plateau[ligArr][colArr]->SetMurGauche(false);
 }
 
 bool CPlateau::aGagne() {
-	bool ok = false;
-	if ((monJoueur->getcolonne() == colArr) && (monJoueur->getligne() == ligArr)) {
-		ok = true;
+	if ((monJoueur->GetColonne() == colArr) && (monJoueur->GetLigne() == ligArr)) {
+		return true;
 	}
-	return ok;
+	return false;
 }
 
-void CPlateau::deplacementJoueur() {
-	AffichePlateau2();
+void CPlateau::DeplacerJoueur() {
+	AffichePlateau();
 	char moncarac = _getch();
 	while (!aGagne()) {
-		int ligne = monJoueur->getligne();
-		int colonne = monJoueur->getcolonne();
+		int ligne = monJoueur->GetLigne();
+		int colonne = monJoueur->GetColonne();
 		switch (moncarac) {
 		case 122: //z
 			if (!(plateau[ligne][colonne]->GetMurHaut())) {
-				monJoueur->deplacement(ligne - 1, colonne);
-				AffichePlateau2();
+				monJoueur->Deplacement(ligne - 1, colonne);
 			}
 			break;
 		case 113: //q
 			if (!(plateau[ligne][colonne]->GetMurDroit()) && (colonne > 0)) {
-				monJoueur->deplacement(ligne, colonne - 1);
-				AffichePlateau2();
+				monJoueur->Deplacement(ligne, colonne - 1);
 			}
 			break;
 		case 115: //s
 			if (!(plateau[ligne][colonne]->GetMurBas())) {
-				monJoueur->deplacement(ligne + 1, colonne);
-				AffichePlateau2();
+				monJoueur->Deplacement(ligne + 1, colonne);
 			}
 			break;
 		case 100: //d
 			if (!(plateau[ligne][colonne]->GetMurGauche())) {
-				monJoueur->deplacement(ligne, colonne + 1);
-				AffichePlateau2();
+				monJoueur->Deplacement(ligne, colonne + 1);
 			}
 			break;
 		default:
 			break;
 		}
+		AffichePlateau();
 		moncarac = _getch();
 	}
 }
 
-void CPlateau::timer() {
+void CPlateau::Chronometre() {
 	int milliseconds = 0;
 	int seconds = 0;
 	int prevSeconds = -1;
 	int minutes = 0;
-	while (minutes != 1) {
+	while (seconds != 30) {
 		if (milliseconds == 10) {
-			++seconds;
+			seconds++;
 			milliseconds = 0;
 		}
 		if (seconds == 60) {
-			++minutes;
+			minutes++;
 			seconds = 0;
 		}
-		if (prevSeconds != seconds) {
-			Verrou.lock();
-			CEcran::Gotoxy(0, 25);
-			cout << "Timer : " << minutes << ":" << seconds;
-			Verrou.unlock();
-		}
+		Verrou.lock();
+		CEcran::Gotoxy(0, 25);
+		cout << "Timer : " << minutes << ":" << seconds;
+		Verrou.unlock();
 		++milliseconds;
 		Sleep(100);
 	}
+	throw "Temps ecoule!";
 }

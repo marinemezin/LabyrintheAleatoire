@@ -24,15 +24,15 @@ private:
 	CJoueur* monJoueur;
 	thread* temps;
 
+	static int firstInit;
+	static mutex Verrou;
+
 	void GenerateRandomLaby();
 	bool IsVisited(int ligNew, int colNew);
 	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
 	CCellule* RecupererCelluleDavant(CCellule* oldCellule);
-	void AjoutDansTableau(CCellule* cellule);
-	void timer();
-
-	static int firstInit;
-	static mutex Verrou;
+	bool AjoutDansTableau(CCellule* cellule);
+	void Chronometre();
 
 public:
 	CPlateau();
@@ -41,8 +41,8 @@ public:
 	bool DetruireMurHaut(int ligne, int colonne);
 	bool DetruireMurDroit(int ligne, int colonne);
 	bool DetruireMurGauche(int ligne, int colonne);
+	//void AffichePlateau2();
 	void AffichePlateau();
-	void AffichePlateau2();
-	void deplacementJoueur();
+	void DeplacerJoueur();
 	bool aGagne();
 };

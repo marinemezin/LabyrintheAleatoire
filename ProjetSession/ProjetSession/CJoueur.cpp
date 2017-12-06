@@ -9,15 +9,15 @@ CJoueur::CJoueur(int ligdep, int coldep) {
 CJoueur::~CJoueur() {
 }
 
-int CJoueur::getligne() {
+int CJoueur::GetLigne() {
 	return ligne;
 }
 
-int CJoueur::getcolonne() {
+int CJoueur::GetColonne() {
 	return colonne;
 }
 
-void CJoueur::deplacement(int lig, int col)
+void CJoueur::Deplacement(int lig, int col)
 {
 	ligne = lig;
 	colonne = col;

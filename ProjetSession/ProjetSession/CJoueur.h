@@ -13,7 +13,7 @@ private:
 public:
 	CJoueur(int ligdep, int coldep);
 	~CJoueur();
-	void deplacement(int lig, int col);
-	int getligne();
-	int getcolonne();
+	void Deplacement(int lig, int col);
+	int GetLigne();
+	int GetColonne();
 };
