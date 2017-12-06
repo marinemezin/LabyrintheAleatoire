@@ -36,11 +36,13 @@ int main()
 
 
 //A faire
-// Notions/technologie non vu ne cours
+// Notions/technologie non vu ne cours -> base de donnée qui enregistre les meilleurs score (avoir un username) ?
+//Ajouter des choses à la liste...
 
 //Activités bonus
 //Ne réafficher que le tour du joueur pour que ça lague moins
 //Entrée et sortie peuvent être n'importe où autour du laby mais pas sur la même face
+//Ajouter des choses à la liste...
 
 //Fait
 //Timer et arret du jeu
@@ -51,3 +53,4 @@ int main()
 //Joueur ne saute pas de mur, ne sort pas du plateau
 //Identification de fin et début de jeu
 //On possède 1 thread pour le timer qui se lance dans la méthode DeplacerJoueur
+//Ajouter des choses à la liste...
