@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "CPlateau.h"
 #include "CEcran.h"
+#include <winsqlite\winsqlite3.h>
 
 using namespace std;
 
