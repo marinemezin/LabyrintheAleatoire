@@ -1,9 +1,9 @@
 #include<iostream>
 #include <string>
 #include <Windows.h>
+#include <stdio.h>
 #include "CPlateau.h"
-#include "CEcran.h"
-#include "sqlite3.h"
+#include 
 
 #define DB "scores.db"
 
