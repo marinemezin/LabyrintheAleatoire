@@ -1,12 +1,16 @@
 #include<iostream>
+#include <string>
 #include <Windows.h>
 #include "CPlateau.h"
 #include "CEcran.h"
 #include <winsqlite\winsqlite3.h>
 
+#define DB "scores.db"
+
 using namespace std;
 
 const int NB_PARTIE = 2;
+bool isOpenDB = false;
 
 void AnnonceNewPartie() {
 	CEcran::ClrScr();
@@ -15,9 +19,73 @@ void AnnonceNewPartie() {
 	CEcran::ClrScr();
 }
 
+bool ChoixEnregistrement() {
+	cout << "Souhaitez vous enregistrer votre score ? ";
+	char choix = 'a';
+	do {
+		try { cin >> choix; }
+		catch (exception& e) {
+			cout << endl << "Veuillez entrer un caractère.";
+		}
+		if ((choix != 'O') && (choix != 'N')) {
+			cout << endl << "Veuillez choisir entre O et N : ";
+		}
+
+	} while ((choix != 'O') && (choix != 'N'));
+	cout << endl;
+	if (choix == 'O') { return true; }
+	else { return false; }
+}
+
+string GetUsername() {
+	cout << "Entrez votre nom d'utilisateur : ";
+	string name = "";
+	cin.ignore();
+	getline(cin, name);
+	return name;
+}
+
+/*bool ConnectDB(sqlite3* database)
+{
+	if (sqlite3_open(DB, &database) == SQLITE_OK)
+	{
+		isOpenDB = true;
+		return true;
+	}
+
+	return false;
+}*/
+
+/*void DisconnectDB(sqlite3* database)
+{
+	if (isOpenDB == true)
+	{
+		sqlite3_close(database);
+	}
+}*/
+
+void BaseDeDonnees() {
+	try {
+		sqlite3* database;
+		string name = GetUsername();
+		
+		//Connexion à la DB
+		if (sqlite3_open(DB, &database) == SQLITE_OK) {
+			isOpenDB = true;
+		}
+		cout << "Connection a la base de donnees reussi" << endl;
+		if (isOpenDB == true) {
+			sqlite3_close(database);
+		}
+	}
+	catch (exception& e) {
+		cout << "Connexion a la base de donnees impossible" << endl;
+	}
+}
+
 int main()
 {
-	bool onContinue = false;
+	/*bool onContinue = false;
 	int compteurPartie = 0;
 	CPlateau* monPlateau = new CPlateau();
 	do {
@@ -30,7 +98,12 @@ int main()
 		}
 	} while (!onContinue);
 	CEcran::ClrScr();
-	cout << "Score final : " << monPlateau->GetResultat() << endl;
+	cout << "Score final : " << monPlateau->GetResultat() << endl;*/
+	bool decision = ChoixEnregistrement();
+	if (decision) {
+		//cout << GetUsername() << endl;
+		BaseDeDonnees();
+	}
 	system("PAUSE");
 	return 0;
 }
