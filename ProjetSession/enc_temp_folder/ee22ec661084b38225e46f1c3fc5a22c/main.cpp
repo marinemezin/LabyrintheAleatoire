@@ -18,7 +18,7 @@
 
 using namespace std;
 
-const int NB_PARTIE = 3;
+const int NB_PARTIE = 2;
 bool isOpenDB = false;
 
 void AnnonceNewPartie() {
@@ -121,7 +121,9 @@ void AffichageMeilleursScores() {
 
 int main()
 {
-	bool onContinue = false;
+	CPlateau* monPlateau = new CPlateau();
+	monPlateau->AffichePlateau2();
+	/*bool onContinue = false;
 	int compteurPartie = 0;
 	CPlateau* monPlateau = new CPlateau();
 	do {
