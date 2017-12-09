@@ -3,7 +3,8 @@
 #include <Windows.h>
 #include <stdio.h>
 #include "CPlateau.h"
-#include 
+#include "CEcran.h"
+#include <winsqlite\winsqlite3.h>
 
 #define DB "scores.db"
 
