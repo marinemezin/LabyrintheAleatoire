@@ -58,8 +58,11 @@ string GetUsername() {
 bool addDataRow(sqlite3* database, string name, int score)
 {
 	char *messageError = NULL;
-	sqlite3_exec(database, "INSERT INTO MeilleurScores(Nom, Score) VALUES ('name', 1)", NULL, 0, &messageError);
+	string sql = "INSERT INTO MeilleurScores(Nom, Score) VALUES ('" + name + "', " + to_string(score) + ")";
+	char* sql2 = (char *)sql.c_str();
+	sqlite3_exec(database, sql2, NULL, 0, &messageError);
 	if (messageError != NULL) {
+		cout << messageError << endl;
 		sqlite3_free(messageError);
 		messageError = NULL;
 		return false;
@@ -71,25 +74,49 @@ void BaseDeDonnees(int score) {
 	try {
 		sqlite3* database;
 		string name = GetUsername();
-		cout << "Connection a la base de donnees..." << endl;
 		//Connexion à la DB
-		if (sqlite3_open(DB, &database) == SQLITE_OK) {
-			isOpenDB = true;
-		}
-		cout << "Connecte !" << endl;
+		if (sqlite3_open(DB, &database) == SQLITE_OK) { isOpenDB = true; }
 		if (addDataRow(database, name, score)) {
-			cout << "Data added" << endl;
+			cout << "Score ajoute avec succes !" << endl;
 		}
-		else {
-			cout << "Ajout failed" << endl;
-		}
-		if (isOpenDB == true) {
-			sqlite3_close(database);
+		else { cout << "Score non ajoute" << endl; }
+		if (isOpenDB == true) { sqlite3_close(database); }
+	}
+	catch (exception& e) { cout << "ERROR : " << e.what() << endl;	}
+}
+
+void getTableData(sqlite3* database) {
+	sqlite3_stmt *statement;
+	char *query = "SELECT Nom, Score FROM MeilleurScores ORDER BY Score DESC";
+	if (sqlite3_prepare(database, query, -1, &statement, 0) == SQLITE_OK) {
+		int ctotal = sqlite3_column_count(statement);
+		int res = 0;
+		int fin = 0;
+		while (fin != 5) {
+			res = sqlite3_step(statement);
+			if (res == SQLITE_ROW) {
+				for (int i = 0; i < ctotal; i++) {
+					string s = (char*)sqlite3_column_text(statement, i); 
+					cout << s;
+					if (s.size() < 10) { cout << "\t\t"; }
+					else { cout << "\t"; }
+				}
+				cout << endl;
+			}
+			fin++;
 		}
 	}
-	catch (exception& e) {
-		cout << "Connexion a la base de donnees impossible" << endl;
+}
+
+void AffichageMeilleursScores() {
+	try {
+		sqlite3* database;
+		//Connexion à la DB
+		if (sqlite3_open(DB, &database) == SQLITE_OK) { isOpenDB = true; }
+		getTableData(database);
+		if (isOpenDB == true) { sqlite3_close(database); }
 	}
+	catch (exception& e) { cout << "ERROR : " << e.what() << endl; }
 }
 
 int main()
@@ -107,19 +134,18 @@ int main()
 		}
 	} while (!onContinue);
 	CEcran::ClrScr();
-	cout << "Score final : " << monPlateau->GetResultat() << endl;
+	cout << "Score final : " << monPlateau->GetResultat() << endl << endl;
 	/*bool decision = ChoixEnregistrement();
 	if (decision) {
-		//cout << GetUsername() << endl;
 		BaseDeDonnees(monPlateau->GetResultat());
-	}*/
+	}
+	AffichageMeilleursScores();*/
 	system("PAUSE");
 	return 0;
 }
 
 
 //A faire
-// Notions/technologie non vu ne cours -> base de donnée qui enregistre les meilleurs score (avoir un username) ?
 //Ajouter des choses à la liste...
 
 //Activités bonus
@@ -136,4 +162,5 @@ int main()
 //Joueur ne saute pas de mur, ne sort pas du plateau
 //Identification de fin et début de jeu
 //On possède 1 thread pour le timer qui se lance dans la méthode DeplacerJoueur
+//Possibilité d'ajout du score dans une base de donnees
 //Ajouter des choses à la liste...
