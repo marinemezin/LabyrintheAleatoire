@@ -29,7 +29,7 @@ void AnnonceNewPartie() {
 }
 
 bool ChoixEnregistrement() {
-	cout << "Souhaitez vous enregistrer votre score ? ";
+	cout << "Souhaitez vous enregistrer votre score ? (O ou N) ";
 	char choix = 'a';
 	do {
 		try { cin >> choix; }
@@ -84,25 +84,6 @@ void BaseDeDonnees(int score) {
 	catch (exception& e) { cout << "ERROR : " << e.what() << endl;	}
 }
 
-bool AjoutPrevRES(int prevRES[5], int res) {
-	for (int i = 0; i < 5; i++) {
-		if (prevRES[i] == 0) {
-			prevRES[i] = res;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool VerifRES(int prevRES[5], int res) {
-	for (int i = 0; i < 5; i++) {
-		if (prevRES[i] == res) {
-			return false;
-		}
-	}
-	return true;
-}
-
 void getTableData(sqlite3* database) {
 	sqlite3_stmt *statement;
 	int prevRES[5];
@@ -117,7 +98,6 @@ void getTableData(sqlite3* database) {
 		while (fin != 5) {
 			res = sqlite3_step(statement);
 			if (res == SQLITE_ROW) {
-				//AjoutPrevRES(prevRES, res);
 				for (int i = 0; i < ctotal; i++) {
 					string s = (char*)sqlite3_column_text(statement, i); 
 					cout << s;
@@ -139,6 +119,8 @@ void AffichageMeilleursScores() {
 		sqlite3* database;
 		//Connexion à la DB
 		if (sqlite3_open(DB, &database) == SQLITE_OK) { isOpenDB = true; }
+		cout << endl;
+		cout << "Nom du joueur\tScore" << endl;
 		getTableData(database);
 		if (isOpenDB == true) { sqlite3_close(database); }
 	}
@@ -147,7 +129,7 @@ void AffichageMeilleursScores() {
 
 int main()
 {
-	/*bool onContinue = false;
+	bool onContinue = false;
 	int compteurPartie = 0;
 	CPlateau* monPlateau = new CPlateau();
 	do {
@@ -164,8 +146,9 @@ int main()
 	bool decision = ChoixEnregistrement();
 	if (decision) {
 		BaseDeDonnees(monPlateau->GetResultat());
-	}*/
+	}
 	AffichageMeilleursScores();
+	cout << endl;
 	system("PAUSE");
 	return 0;
 }
