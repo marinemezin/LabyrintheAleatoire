@@ -84,9 +84,32 @@ void BaseDeDonnees(int score) {
 	catch (exception& e) { cout << "ERROR : " << e.what() << endl;	}
 }
 
+bool AjoutPrevRES(int prevRES[5], int res) {
+	for (int i = 0; i < 5; i++) {
+		if (prevRES[i] == 0) {
+			prevRES[i] = res;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool VerifRES(int prevRES[5], int res) {
+	for (int i = 0; i < 5; i++) {
+		if (prevRES[i] == res) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void getTableData(sqlite3* database) {
 	sqlite3_stmt *statement;
-	char *query = "SELECT Nom, Score FROM MeilleurScores ORDER BY Score DESC";
+	int prevRES[5];
+	for (int i = 0; i < 5; i++) {
+		prevRES[i] = 0;
+	}
+	char* query = "SELECT Nom, Score FROM MeilleurScores ORDER BY Score DESC";
 	if (sqlite3_prepare(database, query, -1, &statement, 0) == SQLITE_OK) {
 		int ctotal = sqlite3_column_count(statement);
 		int res = 0;
@@ -94,6 +117,7 @@ void getTableData(sqlite3* database) {
 		while (fin != 5) {
 			res = sqlite3_step(statement);
 			if (res == SQLITE_ROW) {
+				//AjoutPrevRES(prevRES, res);
 				for (int i = 0; i < ctotal; i++) {
 					string s = (char*)sqlite3_column_text(statement, i); 
 					cout << s;
@@ -101,6 +125,9 @@ void getTableData(sqlite3* database) {
 					else { cout << "\t"; }
 				}
 				cout << endl;
+			}
+			if (res == SQLITE_DONE || res == SQLITE_ERROR) {
+				break;
 			}
 			fin++;
 		}
@@ -120,7 +147,7 @@ void AffichageMeilleursScores() {
 
 int main()
 {
-	bool onContinue = false;
+	/*bool onContinue = false;
 	int compteurPartie = 0;
 	CPlateau* monPlateau = new CPlateau();
 	do {
@@ -137,7 +164,7 @@ int main()
 	bool decision = ChoixEnregistrement();
 	if (decision) {
 		BaseDeDonnees(monPlateau->GetResultat());
-	}
+	}*/
 	AffichageMeilleursScores();
 	system("PAUSE");
 	return 0;
