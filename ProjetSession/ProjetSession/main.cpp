@@ -150,7 +150,6 @@ int main()
 
 //Activités bonus
 //Ne réafficher que le tour du joueur pour que ça lague moins
-//Entrée et sortie peuvent être n'importe où autour du laby mais pas sur la même face
 //Ajouter des choses à la liste...
 
 //Fait
