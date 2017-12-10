@@ -418,27 +418,31 @@ void CPlateau::DeplacerJoueur() {
 		case 122: //z
 			if (!(plateau[ligne][colonne]->GetMurHaut())) {
 				monJoueur->Deplacement(ligne - 1, colonne);
+				ModifZ();
 			}
 			break;
 		case 113: //q
 			if (!(plateau[ligne][colonne]->GetMurDroit()) && (colonne > 0)) {
 				monJoueur->Deplacement(ligne, colonne - 1);
+				AffichePlateau();
 			}
 			break;
 		case 115: //s
 			if (!(plateau[ligne][colonne]->GetMurBas())) {
 				monJoueur->Deplacement(ligne + 1, colonne);
+				AffichePlateau();
 			}
 			break;
 		case 100: //d
 			if (!(plateau[ligne][colonne]->GetMurGauche())) {
 				monJoueur->Deplacement(ligne, colonne + 1);
+				AffichePlateau();
 			}
 			break;
 		default:
 			break;
 		}
-		AffichePlateau();
+		//AffichePlateau();
 		moncarac = _getch();
 	}
 }
@@ -459,4 +463,55 @@ void CPlateau::Chronometre() {
 		Sleep(100);
 	}
 	timeOver = true;
+}
+
+void CPlateau::ModifCellule(int lig, int col, bool visible) {
+	if (visible) {
+		Verrou.lock();
+		CEcran::Gotoxy(6 * col, 3 * lig);
+		if (plateau[lig][col]->GetMurHaut()) { cout << "* * * "; }
+		else { cout << "*   * "; }
+		CEcran::Gotoxy(6 * col, 3 * lig + 1);
+		if (plateau[lig][col]->GetMurDroit() && plateau[lig][col]->GetMurGauche()) { cout << "*   * "; }
+		if (!plateau[lig][col]->GetMurDroit() && plateau[lig][col]->GetMurGauche()) { cout << "    * "; }
+		if (plateau[lig][col]->GetMurDroit() && !plateau[lig][col]->GetMurGauche()) { cout << "*     "; }
+		if (!plateau[lig][col]->GetMurDroit() && !plateau[lig][col]->GetMurGauche()) { cout << "      "; }
+		CEcran::Gotoxy(6 * col, 3 * lig + 2);
+		if (plateau[lig][col]->GetMurBas()) { cout << "* * * "; }
+		else { cout << "*   * "; }
+		Verrou.unlock();
+	}
+	else {
+		Verrou.lock();
+		CEcran::Gotoxy(6 * col, 3 * lig);
+		cout << "------";
+		CEcran::Gotoxy(6 * col, 3 * lig + 1);
+		cout << "------";
+		CEcran::Gotoxy(6 * col, 3 * lig + 2);
+		cout << "------";
+		Verrou.unlock();
+	}
+}
+
+void CPlateau::ModifZ() {
+	if (monJoueur->GetLigne() - 1 > 0) {
+		for (int i = -rayonAffichage; i < rayonAffichage + 1; i++) {
+			ModifCellule(monJoueur->GetLigne() - rayonAffichage, monJoueur->GetColonne() + i, false);
+		}
+		for (int i = -rayonAffichage; i < rayonAffichage + 1; i++) {
+			ModifCellule(monJoueur->GetLigne() + rayonAffichage, monJoueur->GetColonne() + i, true);
+		}
+	}
+}
+
+void CPlateau::ModifQ() {
+
+}
+
+void CPlateau::ModifS() {
+	
+}
+
+void CPlateau::ModifD() {
+
 }

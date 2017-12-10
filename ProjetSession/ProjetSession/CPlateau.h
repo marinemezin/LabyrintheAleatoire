@@ -49,4 +49,9 @@ public:
 	int GetResultat();
 	void Chronometre();
 	void ResetPlateau();
+	void ModifCellule(int lig, int col, bool visible);
+	void ModifZ();
+	void ModifQ();
+	void ModifS();
+	void ModifD();
 };
