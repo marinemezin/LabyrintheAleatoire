@@ -82,10 +82,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\mezin\Source\Repos\LabyrintheAleatoire\ProjetSession\ProjetSession\bin</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\elodi\Source\Repos\LabyrintheAleatoire\ProjetSession\ProjetSession\bin</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\mezin\Source\Repos\LabyrintheAleatoire\ProjetSession\ProjetSession\bin</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\elodi\Source\Repos\LabyrintheAleatoire\ProjetSession\ProjetSession\bin</AdditionalLibraryDirectories>
       <AdditionalDependencies>sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

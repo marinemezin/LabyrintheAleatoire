@@ -424,25 +424,24 @@ void CPlateau::DeplacerJoueur() {
 		case 113: //q
 			if (!(plateau[ligne][colonne]->GetMurDroit()) && (colonne > 0)) {
 				monJoueur->Deplacement(ligne, colonne - 1);
-				AffichePlateau();
+				ModifQ();
 			}
 			break;
 		case 115: //s
 			if (!(plateau[ligne][colonne]->GetMurBas())) {
 				monJoueur->Deplacement(ligne + 1, colonne);
-				AffichePlateau();
+				ModifS();
 			}
 			break;
 		case 100: //d
 			if (!(plateau[ligne][colonne]->GetMurGauche())) {
 				monJoueur->Deplacement(ligne, colonne + 1);
-				AffichePlateau();
+				ModifD();
 			}
 			break;
 		default:
 			break;
 		}
-		//AffichePlateau();
 		moncarac = _getch();
 	}
 }
@@ -494,24 +493,69 @@ void CPlateau::ModifCellule(int lig, int col, bool visible) {
 }
 
 void CPlateau::ModifZ() {
-	if (monJoueur->GetLigne() - 1 > 0) {
-		for (int i = -rayonAffichage; i < rayonAffichage + 1; i++) {
-			ModifCellule(monJoueur->GetLigne() - rayonAffichage, monJoueur->GetColonne() + i, false);
+	for (int i = -rayonAffichage + 1; i < rayonAffichage; i++) {
+		if (monJoueur->GetLigne() + rayonAffichage >= 0 && monJoueur->GetLigne() + rayonAffichage < LIGNE && monJoueur->GetColonne() + i >= 0 && monJoueur->GetColonne() + i < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + rayonAffichage, monJoueur->GetColonne() + i, false);
 		}
-		for (int i = -rayonAffichage; i < rayonAffichage + 1; i++) {
-			ModifCellule(monJoueur->GetLigne() + rayonAffichage, monJoueur->GetColonne() + i, true);
+		if (monJoueur->GetLigne() + 1 - rayonAffichage >= 0 && monJoueur->GetLigne() + 1 - rayonAffichage < LIGNE && monJoueur->GetColonne() + i >= 0 && monJoueur->GetColonne() + i < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + 1 - rayonAffichage, monJoueur->GetColonne() + i, true);
 		}
 	}
+	Verrou.lock();
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() + 4);
+	cout << "  ";
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() + 1);
+	cout << " O";
+	Verrou.unlock();
 }
 
 void CPlateau::ModifQ() {
-
+	for (int i = -rayonAffichage + 1; i < rayonAffichage; i++) {
+		if (monJoueur->GetLigne() + i >= 0 && monJoueur->GetLigne() + i < LIGNE && monJoueur->GetColonne() + rayonAffichage >= 0 && monJoueur->GetColonne() + rayonAffichage < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + i, monJoueur->GetColonne() + rayonAffichage, false);
+		}
+		if (monJoueur->GetLigne() + i >= 0 && monJoueur->GetLigne() + i < LIGNE && monJoueur->GetColonne() + 1 - rayonAffichage >= 0 && monJoueur->GetColonne() + 1 - rayonAffichage < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + i, monJoueur->GetColonne() + 1 - rayonAffichage, true);
+		}
+	}
+	Verrou.lock();
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 7, 3 * monJoueur->GetLigne() + 1);
+	cout << "  ";
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() + 1);
+	cout << " O";
+	Verrou.unlock();
 }
 
 void CPlateau::ModifS() {
-	
+	for (int i = -rayonAffichage + 1; i < rayonAffichage; i++) {
+		if (monJoueur->GetLigne() - rayonAffichage >= 0 && monJoueur->GetLigne() - rayonAffichage < LIGNE && monJoueur->GetColonne() + i >= 0 && monJoueur->GetColonne() + i < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() - rayonAffichage, monJoueur->GetColonne() + i, false);
+		}
+		if (monJoueur->GetLigne() - 1 + rayonAffichage >= 0 && monJoueur->GetLigne() - 1 + rayonAffichage < LIGNE && monJoueur->GetColonne() + i >= 0 && monJoueur->GetColonne() + i < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() -1 + rayonAffichage, monJoueur->GetColonne() + i, true);
+		}
+	}
+	Verrou.lock();
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() - 2);
+	cout << "  ";
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() + 1);
+	cout << " O";
+	Verrou.unlock();
 }
 
 void CPlateau::ModifD() {
-
+	for (int i = -rayonAffichage + 1; i < rayonAffichage; i++) {
+		if (monJoueur->GetLigne() + i >= 0 && monJoueur->GetLigne() + i < LIGNE && monJoueur->GetColonne() - rayonAffichage >= 0 && monJoueur->GetColonne() - rayonAffichage < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + i, monJoueur->GetColonne() - rayonAffichage, false);
+		}
+		if (monJoueur->GetLigne() + i >= 0 && monJoueur->GetLigne() + i < LIGNE && monJoueur->GetColonne() - 1 + rayonAffichage >= 0 && monJoueur->GetColonne() - 1 + rayonAffichage < COLONNE) {
+			ModifCellule(monJoueur->GetLigne() + i, monJoueur->GetColonne() - 1 + rayonAffichage, true);
+		}
+	}
+	Verrou.lock();
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() - 5, 3 * monJoueur->GetLigne() + 1);
+	cout << "  ";
+	CEcran::Gotoxy(6 * monJoueur->GetColonne() + 1, 3 * monJoueur->GetLigne() + 1);
+	cout << " O";
+	Verrou.unlock();
 }
