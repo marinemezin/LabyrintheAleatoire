@@ -451,13 +451,9 @@ void CPlateau::Chronometre() {
 			seconds++;
 			milliseconds = 0;
 		}
-		/*if (seconds == 60) {
-			minutes++;
-			seconds = 0;
-		}*/
 		Verrou.lock();
 		CEcran::Gotoxy(0, 25);
-		cout << "Timer : " << /*minutes << ":" <<*/ seconds;
+		cout << "Timer : " << seconds;
 		Verrou.unlock();
 		++milliseconds;
 		Sleep(100);
