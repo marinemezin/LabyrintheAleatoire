@@ -54,7 +54,6 @@ string GetUsername() {
 	return name;
 }
 
-// Insert a data row into the table 
 bool addDataRow(sqlite3* database, string name, int score)
 {
 	char *messageError = NULL;
@@ -135,31 +134,11 @@ int main()
 	} while (!onContinue);
 	CEcran::ClrScr();
 	cout << "Score final : " << monPlateau->GetResultat() << endl << endl;
-	/*bool decision = ChoixEnregistrement();
+	bool decision = ChoixEnregistrement();
 	if (decision) {
 		BaseDeDonnees(monPlateau->GetResultat());
 	}
-	AffichageMeilleursScores();*/
+	AffichageMeilleursScores();
 	system("PAUSE");
 	return 0;
 }
-
-
-//A faire
-//Ajouter des choses à la liste...
-
-//Activités bonus
-//Ne réafficher que le tour du joueur pour que ça lague moins
-//Ajouter des choses à la liste...
-
-//Fait
-//Timer et arret du jeu
-//Plusieurs parties à la suite
-//Score = durée restante sur le timer
-//Labyrinthe se génère aléatoirement, entrée et sortie aléatoire
-//Joueur peut se déplacer
-//Joueur ne saute pas de mur, ne sort pas du plateau
-//Identification de fin et début de jeu
-//On possède 1 thread pour le timer qui se lance dans la méthode DeplacerJoueur
-//Possibilité d'ajout du score dans une base de donnees
-//Ajouter des choses à la liste...
