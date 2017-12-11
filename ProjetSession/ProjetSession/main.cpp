@@ -28,7 +28,7 @@ void AnnonceNewPartie() {
 	CEcran::ClrScr();
 }
 
-//17
+
 bool ChoixEnregistrement() {
 	cout << "Souhaitez vous enregistrer votre score ? (O ou N) ";
 	char choix = 'a';
@@ -47,6 +47,7 @@ bool ChoixEnregistrement() {
 	else { return false; }
 }
 
+
 string GetUsername() {
 	cout << "Entrez votre nom d'utilisateur : ";
 	string name = "";
@@ -55,9 +56,11 @@ string GetUsername() {
 	return name;
 }
 
+
 bool addDataRow(sqlite3* database, string name, int score) {
 	char *messageError = NULL;
-	string sql = "INSERT INTO MeilleurScores(Nom, Score) VALUES ('" + name + "', " + to_string(score) + ")";
+	string sql = "INSERT INTO MeilleurScores(Nom, Score) VALUES ('" 
+		+ name + "', " + to_string(score) + ")";
 	char* sql2 = (char *)sql.c_str();
 	sqlite3_exec(database, sql2, NULL, 0, &messageError);
 	if (messageError != NULL) {
@@ -68,6 +71,7 @@ bool addDataRow(sqlite3* database, string name, int score) {
 	}
 	return true;
 }
+
 
 void BaseDeDonnees(int score) {
 	try {
@@ -83,7 +87,7 @@ void BaseDeDonnees(int score) {
 	catch (exception& e) { cout << "ERROR : " << e.what() << endl;	}
 }
 
-//25
+
 void getTableData(sqlite3* database) {
 	sqlite3_stmt *statement;
 	int prevRES[5];
@@ -109,6 +113,7 @@ void getTableData(sqlite3* database) {
 	}
 }
 
+
 void AffichageMeilleursScores() {
 	try {
 		sqlite3* database;
@@ -121,7 +126,7 @@ void AffichageMeilleursScores() {
 	catch (exception& e) { cout << "ERROR : " << e.what() << endl; }
 }
 
-//24
+
 int main() {
 	bool onContinue = false;
 	int compteurPartie = 0;

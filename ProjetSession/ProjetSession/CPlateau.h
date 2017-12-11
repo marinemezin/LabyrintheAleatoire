@@ -34,6 +34,7 @@ private:
 	void ResetValues(int& haut, int& bas, int& droit, int& gauche, int& javance);
 	CCellule* RecupererCelluleDavant(CCellule* oldCellule);
 	bool AjoutDansTableau(CCellule* cellule);
+	void ModifJoueur(int lig, int col);
 
 public:
 	CPlateau();
