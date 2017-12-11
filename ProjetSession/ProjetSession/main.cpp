@@ -87,9 +87,7 @@ void BaseDeDonnees(int score) {
 void getTableData(sqlite3* database) {
 	sqlite3_stmt *statement;
 	int prevRES[5];
-	for (int i = 0; i < 5; i++) {
-		prevRES[i] = 0;
-	}
+	for (int i = 0; i < 5; i++) { prevRES[i] = 0; }
 	char* query = "SELECT Nom, Score FROM MeilleurScores ORDER BY Score DESC";
 	if (sqlite3_prepare(database, query, -1, &statement, 0) == SQLITE_OK) {
 		int ctotal = sqlite3_column_count(statement);
@@ -117,7 +115,6 @@ void getTableData(sqlite3* database) {
 void AffichageMeilleursScores() {
 	try {
 		sqlite3* database;
-		//Connexion à la DB
 		if (sqlite3_open(DB, &database) == SQLITE_OK) { isOpenDB = true; }
 		cout << endl;
 		cout << "Nom du joueur\tScore" << endl;
@@ -127,8 +124,7 @@ void AffichageMeilleursScores() {
 	catch (exception& e) { cout << "ERROR : " << e.what() << endl; }
 }
 
-int main()
-{
+int main() {
 	bool onContinue = false;
 	int compteurPartie = 0;
 	CPlateau* monPlateau = new CPlateau();

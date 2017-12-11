@@ -77,9 +77,7 @@ bool CPlateau::DetruireMurBas(int ligne, int colonne) {
 		}
 		return false;
 	}
-	catch (char* const e) {
-		return false;
-	}
+	catch (char* const e) { return false; }
 }
 
 bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
@@ -94,9 +92,7 @@ bool CPlateau::DetruireMurHaut(int ligne, int colonne) {
 		}
 		return false;
 	}
-	catch (char* const e) {
-		return false;
-	}
+	catch (char* const e) { return false; }
 }
 
 bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
@@ -111,9 +107,7 @@ bool CPlateau::DetruireMurDroit(int ligne, int colonne) {
 		}
 		return false;
 	}
-	catch (char* const e) {
-		return false;
-	}
+	catch (char* const e) { return false; }
 }
 
 bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
@@ -128,9 +122,7 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 		}
 		return false;
 	}
-	catch (char* const e) {
-		return false;
-	}
+	catch (char* const e) { return false; }
 }
 
 /*void CPlateau::AffichePlateau2() {
@@ -213,8 +205,7 @@ bool CPlateau::IsVisited(int ligNew, int colNew) {
 	return plateau[ligNew][colNew]->GetVisite();
 }
 
-void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int & javance)
-{
+void CPlateau::ResetValues(int & haut, int & bas, int & droit, int & gauche, int & javance) {
 	haut = 0;
 	bas = 0;
 	droit = 0;
@@ -319,8 +310,7 @@ void CPlateau::GenerateRandomLaby() {
 		} while (!bonChoix);
 
 		if ((testHaut == 0) || (testBas == 0) || (testDroit == 0) || (testGauche == 0)) { //s'il reste des cases non visitées autour
-			switch (choixMur)
-			{
+			switch (choixMur) {
 			case 0:
 				if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { //si une case au dessus existe
 					if (!IsVisited(ligActuelle - 1, colActuelle)) { //si la case adjacente n'a pas été visitée

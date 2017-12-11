@@ -35,8 +35,7 @@ void CJoueur::SetColonne(int value) {
 	colonne = value;
 }
 
-void CJoueur::Deplacement(int lig, int col)
-{
+void CJoueur::Deplacement(int lig, int col) {
 	ligne = lig;
 	colonne = col;
 }
