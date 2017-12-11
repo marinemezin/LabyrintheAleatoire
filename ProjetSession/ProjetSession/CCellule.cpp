@@ -29,23 +29,19 @@ bool CCellule::GetMurGauche() {
 	return murGauche;
 }
 
-bool CCellule::GetVisite()
-{
+bool CCellule::GetVisite() {
 	return visite;
 }
 
-int CCellule::GetLigne()
-{
+int CCellule::GetLigne() {
 	return ligne;
 }
 
-int CCellule::GetColonne()
-{
+int CCellule::GetColonne() {
 	return colonne;
 }
 
-void CCellule::SetVisite(bool valeur)
-{
+void CCellule::SetVisite(bool valeur) {
 	visite = valeur;
 }
 
