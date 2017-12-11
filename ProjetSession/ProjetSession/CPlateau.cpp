@@ -14,12 +14,12 @@ int CPlateau::firstInit = 0;
 const int rayonAffichage = 2;
 const int DUREE_PARTIE = 30;
 
+//27
 CPlateau::CPlateau() {
 	if (firstInit == 0) {
 		firstInit = 1;
 		srand(time(NULL));
 	}
-
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			plateau[i][j] = new CCellule(i, j);
@@ -37,15 +37,12 @@ CPlateau::CPlateau() {
 	//Initialiser le départ
 	plateau[ligDep][colDep]->SetMurDroit(false);
 
-	//Liste ordonnée des cases visitées
 	//Initialisation
 	visites[LIGNE*COLONNE];
 	for (int i = 0; i < LIGNE*COLONNE; i++) {
 		visites[i] = 0;
 	}
-
 	nbVisites = 1;
-
 	GenerateRandomLaby();
 	monJoueur = new CJoueur(ligDep, colDep);
 }
@@ -158,6 +155,7 @@ bool CPlateau::DetruireMurGauche(int ligne, int colonne) {
 	}
 }*/ //a garder
 
+//37
 void CPlateau::AffichePlateau() {
 	Verrou.lock();
 	CEcran::ClrScr();
@@ -235,8 +233,8 @@ bool CPlateau::AjoutDansTableau(CCellule * cellule) {
 	return false;
 }
 
+//25
 void CPlateau::ResetPlateau() {
-	//Remet à jour les tableaux
 	for (int i = 0; i < LIGNE; i++) {
 		for (int j = 0; j < COLONNE; j++) {
 			delete plateau[i][j];
@@ -246,7 +244,6 @@ void CPlateau::ResetPlateau() {
 	for (int i = 0; i < LIGNE * COLONNE; i++) {
 		visites[i] = 0;
 	}
-	//Remet à jour les variables
 	ligDep = rand() % LIGNE;
 	colDep = 0;
 	ligArr = rand() % LIGNE;;
@@ -255,52 +252,28 @@ void CPlateau::ResetPlateau() {
 	colActuelle = colDep;
 	timeOver = false;
 	seconds = 0;
-
-	//Reset Joueur
 	monJoueur->SetLigne(ligDep);
 	monJoueur->SetColonne(colDep);
-
-	//Initialiser le départ
 	plateau[ligDep][colDep]->SetMurDroit(false);
-
 	nbVisites = 1;
-
 	GenerateRandomLaby();
-
 	temps->join();
 }
 
+//87
+/* Choisissez un point de départ dans le champ.
+* Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
+* Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
+* L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
+*/
 void CPlateau::GenerateRandomLaby() {
-	/* Choisissez un point de départ dans le champ.
-	* Choisissez aléatoirement un mur à ce point et découpez un passage dans la cellule adjacente, mais seulement si la cellule adjacente n'a pas encore été visitée. Cela devient la nouvelle cellule actuelle.
-	* Si toutes les cellules adjacentes ont été visitées, sauvegardez jusqu'à la dernière cellule qui a des murs non courbes et répétez.
-	* L'algorithme se termine lorsque le processus a été sauvegardé jusqu'au point de départ.
-	*/
-
-	//Point de départ
 	CCellule* celluleActuelle = plateau[ligActuelle][colActuelle];
-
-	//Mettre un compteur pour compter si les 4 cases adjacentes a ma case actuelle sont déjà visitées
-	int javance = 0; //si on réussi à avancer dans une cellule non visitée, peut être pourra être enlevee
-
-					 //Ne pas incrémenter 2 fois si on test 2 fois un mur du haut
+	int javance = 0;
 	int testHaut = 0, testBas = 0, testDroit = 0, testGauche = 0;
-	//4 variables pour s'assurer qu'on ajoute pas 2 fois la même face à 'bloquee'
-
 	bool auMoinsBougeUneFois = false;
-	//Choix du mur
 	bool bonChoix = false;
-	int choixMur = 0; //entre 0 et 3
-					  //0 Mur Haut
-					  //1 Mur Gauche
-					  //2 Mur Bas
-					  //3 Mur Droit
-
-
-
-	//do while : tant que on est pas revenu au point de départ
+	int choixMur = 0;
 	do {
-		//On choisi un mur a suppr
 		do {
 			choixMur = rand() % 4;
 			if ((testHaut == 0) && (choixMur == 0)) { bonChoix = true; }
@@ -308,14 +281,13 @@ void CPlateau::GenerateRandomLaby() {
 			else if ((testBas == 0) && (choixMur == 2)) { bonChoix = true; }
 			else if ((testDroit == 0) && (choixMur == 3)) { bonChoix = true; }
 		} while (!bonChoix);
-
 		if ((testHaut == 0) || (testBas == 0) || (testDroit == 0) || (testGauche == 0)) { //s'il reste des cases non visitées autour
 			switch (choixMur) {
-			case 0:
-				if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { //si une case au dessus existe
-					if (!IsVisited(ligActuelle - 1, colActuelle)) { //si la case adjacente n'a pas été visitée
-						if (DetruireMurHaut(ligActuelle, colActuelle)) { //si le mur du haut a pu être détruit
-							ligActuelle -= 1; //on se déplace sur la case adjacente
+			case 0: //Mur Haut
+				if ((ligActuelle - 1 >= 0) && (ligActuelle - 1 < LIGNE)) { 
+					if (!IsVisited(ligActuelle - 1, colActuelle)) { 
+						if (DetruireMurHaut(ligActuelle, colActuelle)) {
+							ligActuelle -= 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
 							javance = 1;
 						}
@@ -324,10 +296,10 @@ void CPlateau::GenerateRandomLaby() {
 				}
 				else { testHaut = 1; }
 				break;
-			case 1:
-				if ((colActuelle + 1 >= 0) && (colActuelle + 1 < COLONNE)) { //si une case à gauche existe
-					if (!IsVisited(ligActuelle, colActuelle + 1)) { //si la case adjacente n'a pas été visitée
-						if (DetruireMurGauche(ligActuelle, colActuelle)) { //si le mur de gauche a pu être détruit
+			case 1: //Mur Gauche
+				if ((colActuelle + 1 >= 0) && (colActuelle + 1 < COLONNE)) { 
+					if (!IsVisited(ligActuelle, colActuelle + 1)) { 
+						if (DetruireMurGauche(ligActuelle, colActuelle)) { 
 							colActuelle += 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
 							javance = 1;
@@ -337,10 +309,10 @@ void CPlateau::GenerateRandomLaby() {
 				}
 				else { testGauche = 1; }
 				break;
-			case 2:
-				if ((ligActuelle + 1 >= 0) && (ligActuelle + 1 < LIGNE)) { //si une case en dessous existe
-					if (!IsVisited(ligActuelle + 1, colActuelle)) { //si la case adjacente n'a pas été visitée
-						if (DetruireMurBas(ligActuelle, colActuelle)) { //si le mur du bas a pu être détruit
+			case 2: //Mur Bas
+				if ((ligActuelle + 1 >= 0) && (ligActuelle + 1 < LIGNE)) { 
+					if (!IsVisited(ligActuelle + 1, colActuelle)) { 
+						if (DetruireMurBas(ligActuelle, colActuelle)) { 
 							ligActuelle += 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
 							javance = 1;
@@ -350,10 +322,10 @@ void CPlateau::GenerateRandomLaby() {
 				}
 				else { testBas = 1; }
 				break;
-			case 3:
-				if ((colActuelle - 1 >= 0) && (colActuelle - 1 < COLONNE)) { //si une case à droite existe
-					if (!IsVisited(ligActuelle, colActuelle - 1)) { //si la case adjacente n'a pas été visitée
-						if (DetruireMurDroit(ligActuelle, colActuelle)) { //si le mur de droite a pu être détruit
+			case 3: //Mur Droit
+				if ((colActuelle - 1 >= 0) && (colActuelle - 1 < COLONNE)) { 
+					if (!IsVisited(ligActuelle, colActuelle - 1)) { 
+						if (DetruireMurDroit(ligActuelle, colActuelle)) { 
 							colActuelle -= 1;
 							celluleActuelle = plateau[ligActuelle][colActuelle];
 							javance = 1;
@@ -367,7 +339,7 @@ void CPlateau::GenerateRandomLaby() {
 				break;
 			}
 		}
-		else { //On ne peux plus avancer dans une case non visitée, on reviens en arrière
+		else {
 			celluleActuelle = RecupererCelluleDavant(celluleActuelle);
 			ligActuelle = celluleActuelle->GetLigne();
 			colActuelle = celluleActuelle->GetColonne();
@@ -379,8 +351,6 @@ void CPlateau::GenerateRandomLaby() {
 			AjoutDansTableau(celluleActuelle);
 		}
 	} while ((celluleActuelle != plateau[ligDep][colDep]) || (nbVisites < LIGNE * COLONNE));
-
-	//Création de la sortie
 	plateau[ligArr][colArr]->SetMurGauche(false);
 }
 
@@ -397,6 +367,7 @@ int CPlateau::GetResultat() {
 	return monJoueur->GetScore();
 }
 
+//38
 void CPlateau::DeplacerJoueur() {
 	temps = new thread(&CPlateau::Chronometre, this);
 	AffichePlateau();
@@ -454,6 +425,7 @@ void CPlateau::Chronometre() {
 	timeOver = true;
 }
 
+//27
 void CPlateau::ModifCellule(int lig, int col, bool visible) {
 	if (visible) {
 		Verrou.lock();
